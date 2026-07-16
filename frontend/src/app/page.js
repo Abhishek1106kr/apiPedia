@@ -13,6 +13,148 @@ const placeholders = [
   "Search twilio messages..."
 ];
 
+// Collapsible metric rows grouped into 11 developer categories
+const METRIC_GROUPS = {
+  "Overview": [
+    { key: "category", label: "Category", get: (api) => api.category },
+    { key: "health", label: "Health Score", get: (api) => api.vitals.healthScore, type: "progress", min: 80, max: 100, unit: "%" },
+    { key: "uptime", label: "Uptime guarantee", get: (api) => api.vitals.uptime, type: "progress", min: 99.0, max: 100.0, unit: "%" }
+  ],
+  "Authentication": [
+    { key: "auth", label: "Authentication Type", get: (api) => api.vitals.authType }
+  ],
+  "Performance": [
+    { key: "latency", label: "Average Latency", get: (api) => api.vitals.latency, type: "progress_inverse", min: 40, max: 400, unit: "ms" },
+    { key: "responseTime", label: "Response Time", get: (api) => api.vitals.responseTime }
+  ],
+  "Documentation": [
+    { key: "docsScore", label: "Documentation Score", get: (api) => api.vitals.docsScore, type: "progress", min: 5, max: 10, unit: "/10" },
+    { key: "openapi", label: "OpenAPI Spec", get: (api) => api.openapiUrl ? "✓ Available" : "— Missing" },
+    { key: "postman", label: "Postman Collection", get: (api) => api.postmanUrl ? "✓ Available" : "— Missing" }
+  ],
+  "SDKs": [
+    { key: "sdkScore", label: "SDK Quality Score", get: (api) => api.vitals.sdkScore, type: "progress", min: 5, max: 10, unit: "/10" },
+    { key: "sdkLangs", label: "SDK Languages", get: (api) => api.id === "stripe" || api.id === "github" ? 12 : api.id === "clerk" || api.id === "razorpay" ? 8 : 10 },
+    { key: "sandbox", label: "Sandbox Mode", get: (api) => api.sandboxAvailable ? "Yes" : "No" }
+  ],
+  "Pricing": [
+    { key: "rateLimit", label: "Rate Limits", get: (api) => api.vitals.rateLimit }
+  ],
+  "Security": [
+    { key: "security", label: "Security Profile", get: (api) => api.vitals.security }
+  ],
+  "Community": [
+    { key: "community", label: "GitHub Stars / Community", get: (api) => api.vitals.community },
+    { key: "githubActivity", label: "GitHub Activity", get: (api) => api.vitals.githubActivity }
+  ],
+  "Developer Experience": [
+    { key: "pain", label: "Developer Pain Index", get: (api) => api.painIndex.learningDifficulty },
+    { key: "issues", label: "Active Repo Issues", get: (api) => api.painIndex.githubIssues, type: "progress_inverse", min: 10, max: 200, unit: "" }
+  ],
+  "Reliability": [
+    { key: "deprecation", label: "Deprecation Risk", get: (api) => api.dna.deprecationRisk }
+  ],
+  "AI Insights": [
+    { key: "breaking", label: "6m Breaking Prediction", get: (api) => api.dna.breakingChangesPredictor, type: "progress_inverse", min: 0.5, max: 5.0, unit: "%" },
+    { key: "aiConfidence", label: "AI Integration Confidence", get: (api) => api.vitals.aiConfidence, type: "progress", min: 80, max: 100, unit: "%" }
+  ]
+};
+
+const getMetricValueType = (val) => {
+  if (val === undefined || val === null || val === "" || String(val).includes("Missing") || String(val).includes("—")) {
+    return "missing";
+  }
+  return "normal";
+};
+
+// Computes best (green), average (neutral), weakest (orange), or missing (gray) categories dynamically
+const getMetricClassifications = (metric, apis) => {
+  const classifications = {};
+  if (!metric.type) {
+    apis.forEach(api => {
+      classifications[api.id] = getMetricValueType(metric.get(api)) === "missing" ? "missing" : "neutral";
+    });
+    return classifications;
+  }
+
+  const apiValues = apis.map(api => {
+    const raw = metric.get(api);
+    if (getMetricValueType(raw) === "missing") return { apiId: api.id, val: null };
+    const num = typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.]/g, ''));
+    return { apiId: api.id, val: isNaN(num) ? null : num };
+  });
+
+  const validValues = apiValues.filter(av => av.val !== null);
+  if (validValues.length <= 1) {
+    apis.forEach(api => {
+      classifications[api.id] = getMetricValueType(metric.get(api)) === "missing" ? "missing" : "neutral";
+    });
+    return classifications;
+  }
+
+  const nums = validValues.map(av => av.val);
+  const minVal = Math.min(...nums);
+  const maxVal = Math.max(...nums);
+
+  if (minVal === maxVal) {
+    apis.forEach(api => {
+      classifications[api.id] = getMetricValueType(metric.get(api)) === "missing" ? "missing" : "neutral";
+    });
+    return classifications;
+  }
+
+  apiValues.forEach(av => {
+    if (av.val === null) {
+      classifications[av.apiId] = "missing";
+    } else if (metric.type === "progress") {
+      if (av.val === maxVal) classifications[av.apiId] = "best";
+      else if (av.val === minVal) classifications[av.apiId] = "weakest";
+      else classifications[av.apiId] = "neutral";
+    } else if (metric.type === "progress_inverse") {
+      if (av.val === minVal) classifications[av.apiId] = "best";
+      else if (av.val === maxVal) classifications[av.apiId] = "weakest";
+      else classifications[av.apiId] = "neutral";
+    } else {
+      classifications[av.apiId] = "neutral";
+    }
+  });
+
+  return classifications;
+};
+
+// Check if all values are identical (for hide identical toggle filter)
+const checkIsRowIdentical = (row, apis) => {
+  if (apis.length <= 1) return true;
+  const firstVal = String(row.get(apis[0])).toLowerCase().trim();
+  return apis.every(a => String(row.get(a)).toLowerCase().trim() === firstVal);
+};
+
+// Dynamically sorts active columns lists
+const sortComparedApis = (apis, sortType) => {
+  return [...apis].sort((a, b) => {
+    switch (sortType) {
+      case "health":
+        return b.vitals.healthScore - a.vitals.healthScore;
+      case "latency":
+        return a.vitals.latency - b.vitals.latency;
+      case "sdk":
+        return b.vitals.sdkScore - a.vitals.sdkScore;
+      case "docs":
+        return b.vitals.docsScore - a.vitals.docsScore;
+      case "popularity":
+        return b.vitals.popularity - a.vitals.popularity;
+      case "community":
+        const starsA = parseFloat(a.vitals.community.replace(/[^0-9.]/g, '')) || 0;
+        const starsB = parseFloat(b.vitals.community.replace(/[^0-9.]/g, '')) || 0;
+        return starsB - starsA;
+      case "alpha":
+        return a.name.localeCompare(b.name);
+      default:
+        return 0;
+    }
+  });
+};
+
 export default function ApiPediaApp() {
   // Navigation & Page State
   const [activeTab, setActiveTab] = useState("home"); // 'home' | 'categories' | 'benchmarks' | 'compare' | 'docs'
@@ -24,9 +166,14 @@ export default function ApiPediaApp() {
   const [detailSubTab, setDetailSubTab] = useState("overview"); // 'overview' | 'playground' | 'docs' | 'dna' | 'pain' | 'recipes' | 'paths' | 'analytics'
   const [selectedEndpointIndex, setSelectedEndpointIndex] = useState(0);
 
-  // Compare Page State
-  const [compareApi1Id, setCompareApi1Id] = useState("stripe");
-  const [compareApi2Id, setCompareApi2Id] = useState("razorpay");
+  // Compare Page State (Supports 2-5 APIs)
+  const [comparedApiIds, setComparedApiIds] = useState(["stripe", "razorpay"]);
+  const [compareSearchQueries, setCompareSearchQueries] = useState(["Stripe", "Razorpay"]);
+  const [activeSearchDropdownSlot, setActiveSearchDropdownSlot] = useState(null);
+  const [pinnedMetricKeys, setPinnedMetricKeys] = useState([]);
+  const [hideIdentical, setHideIdentical] = useState(false);
+  const [metricSearchQuery, setMetricSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("health"); // 'health' | 'latency' | 'sdk' | 'docs' | 'popularity' | 'community' | 'alpha'
 
   // Playground State
   const [playgroundHeaders, setPlaygroundHeaders] = useState("Authorization: Bearer sk_test_apipedia\nContent-Type: application/json");
@@ -105,10 +252,18 @@ export default function ApiPediaApp() {
         setCommandPaletteOpen((prev) => !prev);
       }
 
+      // Open Compare on Ctrl+Shift+C
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        setActiveTab("compare");
+        selectApi(null);
+      }
+
       // Escape to close overlays
       if (e.key === "Escape") {
         setCommandPaletteOpen(false);
         setKeyboardModalOpen(false);
+        setActiveSearchDropdownSlot(null);
       }
 
       // Keyboard navigation shortcuts if not in inputs
@@ -238,9 +393,54 @@ export default function ApiPediaApp() {
     alert(`${label} copied to clipboard!`);
   };
 
-  // Compare calculation helper
-  const api1 = APIS.find(a => a.id === compareApi1Id) || APIS[0];
-  const api2 = APIS.find(a => a.id === compareApi2Id) || APIS[1];
+  // Export handlers for comparison matrix
+  const handleExportCsv = (apis, groups, hideIdenticalRowCheck) => {
+    let csv = "Category,Metric," + apis.map(a => a.name).join(",") + "\n";
+    Object.entries(groups).forEach(([groupName, rows]) => {
+      rows.forEach(row => {
+        if (hideIdenticalRowCheck && checkIsRowIdentical(row, apis)) return;
+        const vals = apis.map(a => `"${String(row.get(a)).replace(/"/g, '""')}"`);
+        csv += `"${groupName}","${row.label}",` + vals.join(",") + "\n";
+      });
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "apipedia_comparison.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportMarkdown = (apis, groups, hideIdenticalRowCheck) => {
+    let md = `| Category | Metric | ` + apis.map(a => a.name).join(" | ") + " |\n";
+    md += `| --- | --- | ` + apis.map(() => "---").join(" | ") + " |\n";
+    Object.entries(groups).forEach(([groupName, rows]) => {
+      rows.forEach(row => {
+        if (hideIdenticalRowCheck && checkIsRowIdentical(row, apis)) return;
+        const vals = apis.map(a => String(row.get(a)));
+        md += `| ${groupName} | ${row.label} | ` + vals.join(" | ") + " |\n";
+      });
+    });
+    navigator.clipboard.writeText(md);
+    alert("Markdown comparison table copied to clipboard!");
+  };
+
+  const handleExportPdf = () => {
+    window.print();
+  };
+
+  const handleExportShare = (apis) => {
+    const ids = apis.map(a => a.id).join(",");
+    const url = `${window.location.origin}${window.location.pathname}?compare=${ids}`;
+    navigator.clipboard.writeText(url);
+    alert(`Comparison share link copied to clipboard: ${url}`);
+  };
+
+  const [collapsedGroups, setCollapsedGroups] = useState({});
+
+  const comparedApis = comparedApiIds.map(id => APIS.find(a => a.id === id)).filter(Boolean);
+  const sortedComparedApis = sortComparedApis(comparedApis, sortBy);
 
   return (
     <div className="flex-1 flex flex-col bg-[#0B0D10] text-[#F4F4F5] font-sans antialiased min-h-screen">
@@ -1475,83 +1675,470 @@ export default function ApiPediaApp() {
             {/* STATE E: COMPARE TAB */}
             {/* =============================================================== */}
             {activeTab === "compare" && (
-              <div className="space-y-6">
+              <div className="space-y-6 flex-1 flex flex-col">
+                
+                {/* Header */}
                 <div className="border-b border-[#24272C] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-bold text-white tracking-tight">API Comparison Matrix</h2>
-                    <p className="text-zinc-500 text-xs mt-1 font-mono">Select and compare developer vitals side-by-side.</p>
-                  </div>
-
-                  {/* Comparators */}
-                  <div className="flex space-x-4">
-                    <select
-                      className="bg-[#121417] border border-[#24272C] text-xs text-white p-2 rounded-lg outline-none"
-                      value={compareApi1Id}
-                      onChange={(e) => setCompareApi1Id(e.target.value)}
-                    >
-                      {APIS.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    </select>
-                    <span className="text-zinc-500 font-mono self-center">vs</span>
-                    <select
-                      className="bg-[#121417] border border-[#24272C] text-xs text-white p-2 rounded-lg outline-none"
-                      value={compareApi2Id}
-                      onChange={(e) => setCompareApi2Id(e.target.value)}
-                    >
-                      {APIS.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    </select>
+                    <h2 className="text-xl font-bold text-white tracking-tight">Compare APIs</h2>
+                    <p className="text-zinc-500 text-xs mt-1 font-mono">Search, select and compare any APIs instantly.</p>
                   </div>
                 </div>
 
-                {/* Comparison Grid Table */}
-                <div className="bg-[#121417] border border-[#24272C] rounded-xl overflow-hidden shadow-lg">
-                  <div className="grid grid-cols-3 bg-[#181B20] border-b border-[#24272C] p-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 font-mono">
-                    <div>Metric</div>
-                    <div>{api1.name}</div>
-                    <div>{api2.name}</div>
+                {/* API Search Selector Boxes */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {comparedApiIds.map((apiId, slotIdx) => {
+                      const activeApi = APIS.find(a => a.id === apiId);
+                      return (
+                        <div key={slotIdx} className="relative space-y-1 bg-[#121417] border border-[#24272C] p-3 rounded-lg flex flex-col justify-between">
+                          <label className="text-[9px] text-zinc-500 font-mono font-semibold uppercase tracking-wider">Slot {slotIdx + 1}</label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className="w-full bg-[#181B20] border border-[#24272C] focus:border-[#4F8CFF] rounded-lg px-2.5 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
+                              placeholder="Search API..."
+                              value={compareSearchQueries[slotIdx] !== undefined ? compareSearchQueries[slotIdx] : (activeApi ? activeApi.name : "")}
+                              onFocus={() => {
+                                setActiveSearchDropdownSlot(slotIdx);
+                                const newQueries = [...compareSearchQueries];
+                                newQueries[slotIdx] = "";
+                                setCompareSearchQueries(newQueries);
+                              }}
+                              onChange={(e) => {
+                                const newQueries = [...compareSearchQueries];
+                                newQueries[slotIdx] = e.target.value;
+                                setCompareSearchQueries(newQueries);
+                              }}
+                            />
+                            {/* Dropdown overlay */}
+                            {activeSearchDropdownSlot === slotIdx && (
+                              <div className="absolute left-0 right-0 top-full mt-1 bg-[#121417] border border-[#24272C] rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5 space-y-1">
+                                {APIS
+                                  .filter(a => a.name.toLowerCase().includes((compareSearchQueries[slotIdx] || "").toLowerCase()))
+                                  .map(api => (
+                                    <div
+                                      key={api.id}
+                                      onClick={() => {
+                                        const newIds = [...comparedApiIds];
+                                        newIds[slotIdx] = api.id;
+                                        setComparedApiIds(newIds);
+                                        
+                                        const newQueries = [...compareSearchQueries];
+                                        newQueries[slotIdx] = api.name;
+                                        setCompareSearchQueries(newQueries);
+                                        
+                                        setActiveSearchDropdownSlot(null);
+                                      }}
+                                      className="p-2 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-md cursor-pointer flex items-center justify-between text-xs transition-all"
+                                    >
+                                      <div className="flex items-center space-x-2">
+                                        <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: api.logoColor }}></div>
+                                        <span className="text-white font-semibold">{api.name}</span>
+                                        {api.verified && (
+                                          <span className="bg-[#4F8CFF]/10 text-[#4F8CFF] px-1 py-0.5 rounded text-[8px] font-mono">✓</span>
+                                        )}
+                                      </div>
+                                      <span className="text-[10px] text-zinc-500 font-mono">{api.vitals.healthScore}% Health</span>
+                                    </div>
+                                  ))}
+                                {APIS.filter(a => a.name.toLowerCase().includes((compareSearchQueries[slotIdx] || "").toLowerCase())).length === 0 && (
+                                  <div className="p-3 text-center text-zinc-500 text-xs">No matching APIs</div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Add another API button */}
+                    {comparedApiIds.length < 5 && (
+                      <button
+                        onClick={() => {
+                          const unusedApi = APIS.find(a => !comparedApiIds.includes(a.id)) || APIS[0];
+                          setComparedApiIds([...comparedApiIds, unusedApi.id]);
+                          setCompareSearchQueries([...compareSearchQueries, unusedApi.name]);
+                        }}
+                        className="bg-[#121417]/40 hover:bg-[#121417] border border-dashed border-[#24272C] hover:border-[#4F8CFF]/60 text-zinc-500 hover:text-[#4F8CFF] rounded-lg p-3 flex flex-col items-center justify-center space-y-1 text-xs font-semibold font-mono transition-all h-full min-h-[66px]"
+                      >
+                        <span>+ Add another API</span>
+                      </button>
+                    )}
                   </div>
 
-                  <div className="divide-y divide-[#24272C]">
-                    {[
-                      { label: "Category", v1: api1.category, v2: api2.category },
-                      { label: "Health Score", v1: `${api1.vitals.healthScore}%`, v2: `${api2.vitals.healthScore}%` },
-                      { label: "Latency (p50)", v1: `${api1.vitals.latency}ms`, v2: `${api2.vitals.latency}ms` },
-                      { label: "Uptime guarantee", v1: `${api1.vitals.uptime}%`, v2: `${api2.vitals.uptime}%` },
-                      { label: "Docs DX Grade", v1: `${api1.vitals.docsScore}/10`, v2: `${api2.vitals.docsScore}/10` },
-                      { label: "SDK Score", v1: `${api1.vitals.sdkScore}/10`, v2: `${api2.vitals.sdkScore}/10` },
-                      { label: "Authentication Type", v1: api1.vitals.authType, v2: api2.vitals.authType },
-                      { label: "Rate Limits", v1: api1.vitals.rateLimit, v2: api2.vitals.rateLimit },
-                      { label: "Deprecation Risk", v1: api1.dna.deprecationRisk, v2: api2.dna.deprecationRisk },
-                      { label: "Migration Complexity", v1: api1.dna.migrationComplexity, v2: api2.dna.migrationComplexity }
-                    ].map((row, idx) => (
-                      <div key={idx} className="grid grid-cols-3 p-4 text-xs font-mono hover:bg-[#181B20]/25 transition-colors">
-                        <div className="text-zinc-500 uppercase">{row.label}</div>
-                        <div className="text-white font-medium">{row.v1}</div>
-                        <div className="text-white font-medium">{row.v2}</div>
-                      </div>
+                  {/* Chips indicating compared APIs */}
+                  <div className="flex flex-wrap gap-2 pt-1.5">
+                    {comparedApiIds.map((apiId, idx) => {
+                      const api = APIS.find(a => a.id === apiId);
+                      if (!api) return null;
+                      return (
+                        <div key={apiId} className="flex items-center space-x-1.5 bg-[#121417] border border-[#24272C] px-3 py-1 rounded-full text-xs font-mono">
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: api.logoColor }}></span>
+                          <span className="text-zinc-300 font-medium">{api.name}</span>
+                          {comparedApiIds.length > 2 && (
+                            <button 
+                              onClick={() => {
+                                const newIds = comparedApiIds.filter(id => id !== apiId);
+                                setComparedApiIds(newIds);
+                                const newQueries = compareSearchQueries.filter((_, qIdx) => qIdx !== idx);
+                                setCompareSearchQueries(newQueries);
+                              }}
+                              className="text-zinc-500 hover:text-white pl-1 font-bold"
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* AI generated Quick Difference summaries */}
+                <div className="space-y-2">
+                  <h3 className="text-[10px] text-zinc-500 font-mono font-semibold uppercase tracking-wider">Quick Differences Summary</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {sortedComparedApis.map(api => {
+                      let desc = "";
+                      switch (api.id) {
+                        case "stripe":
+                          desc = "Best SDK ecosystem and developer documentation rating. Strongest p95 performance metrics.";
+                          break;
+                        case "openai":
+                          desc = "Advanced LLM APIs with high token density but moderate latency overheads.";
+                          break;
+                        case "github":
+                          desc = "DevOps infrastructure integrations featuring very high commit activity and community scale.";
+                          break;
+                        case "clerk":
+                          desc = "Fastest overall integration setup and Edge middleware token caching profiles.";
+                          break;
+                        case "twilio":
+                          desc = "Direct telecom carrier queue bindings, but higher pricing scales.";
+                          break;
+                        case "razorpay":
+                          desc = "Optimized local UPI checkout ledger integration workflows and flexible rates.";
+                          break;
+                        case "paypal":
+                          desc = "Deep global merchant ledger settlements, but legacy API integration wrappers.";
+                          break;
+                        case "anthropic":
+                          desc = "High context token cache support and reasoning compliance pipelines.";
+                          break;
+                        case "auth0":
+                          desc = "Broad SAML SSO and custom script extensions, with high enterprise pricing tiers.";
+                          break;
+                        default:
+                          desc = api.tagline;
+                      }
+                      return (
+                        <div key={api.id} className="bg-[#121417] border border-[#24272C] p-3 rounded-lg space-y-1">
+                          <div className="flex items-center space-x-1.5 text-xs font-bold text-white">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: api.logoColor }}></div>
+                            <span>{api.name}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">{desc}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Table Filters & Settings Row */}
+                <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 space-y-4">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    
+                    {/* Search metrics */}
+                    <div className="relative flex-1 max-w-sm">
+                      <input
+                        type="text"
+                        className="w-full bg-[#181B20] border border-[#24272C] hover:border-zinc-500 focus:border-[#4F8CFF] rounded-lg pl-3 pr-8 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
+                        placeholder="Search Metrics... (e.g. Latency)"
+                        value={metricSearchQuery}
+                        onChange={(e) => setMetricSearchQuery(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Sorting dropdown */}
+                    <div className="flex items-center space-x-3 text-xs">
+                      <span className="text-zinc-500 font-mono">Sort columns:</span>
+                      <select
+                        className="bg-[#181B20] border border-[#24272C] text-xs text-white p-1.5 rounded-lg outline-none"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                      >
+                        <option value="health">Health Score</option>
+                        <option value="latency">Latency</option>
+                        <option value="sdk">SDK Quality</option>
+                        <option value="docs">Documentation</option>
+                        <option value="popularity">Popularity</option>
+                        <option value="community">Community Stars</option>
+                        <option value="alpha">Alphabetical</option>
+                      </select>
+                    </div>
+
+                    {/* Hide Identical and star toggles */}
+                    <div className="flex items-center space-x-6 text-xs font-mono">
+                      <label className="flex items-center space-x-2 cursor-pointer select-none text-zinc-400 hover:text-white">
+                        <input
+                          type="checkbox"
+                          className="rounded border-[#24272C] bg-[#181B20] text-[#4F8CFF] focus:ring-0"
+                          checked={hideIdentical}
+                          onChange={(e) => setHideIdentical(e.target.checked)}
+                        />
+                        <span>Hide identical values</span>
+                      </label>
+                    </div>
+
+                    {/* Export group */}
+                    <div className="flex flex-wrap gap-2 text-[10px] font-mono">
+                      <button 
+                        onClick={() => handleExportCsv(sortedComparedApis, METRIC_GROUPS, hideIdentical)}
+                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                      >
+                        CSV
+                      </button>
+                      <button 
+                        onClick={() => handleExportMarkdown(sortedComparedApis, METRIC_GROUPS, hideIdentical)}
+                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                      >
+                        Markdown
+                      </button>
+                      <button 
+                        onClick={handleExportPdf}
+                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                      >
+                        PDF
+                      </button>
+                      <button 
+                        onClick={() => handleExportShare(sortedComparedApis)}
+                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                      >
+                        Share
+                      </button>
+                    </div>
+
+                  </div>
+
+                  {/* Quick Categories Navigation Filters */}
+                  <div className="flex flex-wrap gap-1.5 border-t border-[#24272C]/40 pt-3">
+                    {Object.keys(METRIC_GROUPS).map(groupName => (
+                      <button
+                        key={groupName}
+                        onClick={() => {
+                          const el = document.getElementById(`metric-group-${groupName}`);
+                          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }}
+                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-400 hover:text-white px-2.5 py-1 rounded text-[10px] font-mono transition-colors"
+                      >
+                        {groupName}
+                      </button>
                     ))}
+                  </div>
 
-                    {/* Pros and Cons */}
-                    <div className="grid grid-cols-3 p-4 text-xs">
-                      <div className="text-zinc-500 uppercase font-mono">Pros & Strengths</div>
-                      <div className="text-emerald-400 font-sans leading-relaxed">
-                        Excellent developer feedback. Highly stable SDK environments. Minimal API updates signature drift.
-                      </div>
-                      <div className="text-emerald-400 font-sans leading-relaxed">
-                        High scalability. Flexible custom billing logic. Rapid feature rollouts.
-                      </div>
+                </div>
+
+                {/* Dynamic Comparison Grid Table with Horizontal Scroll */}
+                <div className="border border-[#24272C] rounded-xl overflow-x-auto w-full bg-[#121417] shadow-xl">
+                  
+                  <div 
+                    className="flex flex-col divide-y divide-[#24272C]" 
+                    style={{ minWidth: `${225 + sortedComparedApis.length * 200}px` }}
+                  >
+                    
+                    {/* Header Row */}
+                    <div 
+                      className="grid items-center bg-[#181B20] text-xs font-mono font-semibold"
+                      style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
+                    >
+                      <div className="p-4 border-r border-[#24272C] text-zinc-500 uppercase font-bold sticky left-0 bg-[#181B20] z-20">Metric Name</div>
+                      {sortedComparedApis.map(api => (
+                        <div key={api.id} className="p-4 flex items-center space-x-2 border-r border-[#24272C] last:border-0 justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: api.logoColor }}></div>
+                            <span className="text-white font-bold">{api.name}</span>
+                          </div>
+                          <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">{api.category}</span>
+                        </div>
+                      ))}
                     </div>
 
-                    <div className="grid grid-cols-3 p-4 text-xs">
-                      <div className="text-zinc-500 uppercase font-mono">Cons & Limitations</div>
-                      <div className="text-rose-400 font-sans leading-relaxed">
-                        Requires multi-step signatures handling. Higher processing fees for minor merchants.
+                    {/* PINNED METRICS GROUP (If any) */}
+                    {pinnedMetricKeys.length > 0 && (
+                      <div className="flex flex-col bg-[#1c222c]/20 border-b border-[#24272C]">
+                        <div 
+                          className="grid bg-[#1c222c]/40 text-[9px] font-mono font-bold text-[#4F8CFF] uppercase border-b border-[#24272C] tracking-wider py-1.5"
+                          style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
+                        >
+                          <div className="px-4 sticky left-0 bg-[#1c222c] z-10">★ Pinned Metrics</div>
+                        </div>
+
+                        {Object.entries(METRIC_GROUPS).flatMap(([_, rows]) => rows).filter(row => pinnedMetricKeys.includes(row.key)).map(row => {
+                          const classifications = getMetricClassifications(row, sortedComparedApis);
+                          return (
+                            <div 
+                              key={`pinned-${row.key}`}
+                              className="grid items-center hover:bg-[#181B20]/25 transition-colors py-2.5 text-xs font-mono"
+                              style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
+                            >
+                              <div className="px-4 pr-2 border-r border-[#24272C]/60 sticky left-0 bg-[#121417] z-10 flex items-center justify-between">
+                                <span className="text-zinc-300 font-semibold">{row.label}</span>
+                                <button 
+                                  onClick={() => setPinnedMetricKeys(prev => prev.filter(k => k !== row.key))}
+                                  className="text-amber-500 hover:text-zinc-500 pl-1 text-[11px]"
+                                >
+                                  ★
+                                </button>
+                              </div>
+                              {sortedComparedApis.map(api => {
+                                const rawVal = row.get(api);
+                                const cls = classifications[api.id];
+                                return (
+                                  <div key={api.id} className="px-4 border-r border-[#24272C]/40 last:border-r-0 space-y-1.5">
+                                    <div className="flex items-center justify-between">
+                                      <span className={`font-semibold ${
+                                        cls === "best" ? "text-emerald-400" : cls === "weakest" ? "text-amber-400" : cls === "missing" ? "text-zinc-600" : "text-white"
+                                      }`}>{rawVal}</span>
+                                      
+                                      {/* Highlight tag */}
+                                      {cls === "best" && (
+                                        <span className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-1 py-0.25 rounded text-[8px] font-mono scale-90">Best</span>
+                                      )}
+                                      {cls === "weakest" && (
+                                        <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1 py-0.25 rounded text-[8px] font-mono scale-90">Weakest</span>
+                                      )}
+                                    </div>
+
+                                    {/* Small visual progress bars */}
+                                    {row.type && cls !== "missing" && (
+                                      <div className="w-full bg-[#181B20] h-1 rounded overflow-hidden">
+                                        {(() => {
+                                          const numeric = typeof rawVal === 'number' ? rawVal : parseFloat(String(rawVal).replace(/[^0-9.]/g, ''));
+                                          const pct = Math.max(0, Math.min(100, ((numeric - row.min) / (row.max - row.min)) * 100));
+                                          return (
+                                            <div 
+                                              className={`h-full ${
+                                                cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-[#4F8CFF]"
+                                              }`}
+                                              style={{ width: `${pct}%` }}
+                                            />
+                                          );
+                                        })()}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="text-rose-400 font-sans leading-relaxed">
-                        Enterprise integrations are complex. SDK wrappers undergo active lifecycle deprecation updates.
-                      </div>
-                    </div>
+                    )}
+
+                    {/* METRICS GROUPS COLLAPSIBLE SECTIONS */}
+                    {Object.entries(METRIC_GROUPS).map(([groupName, rows]) => {
+                      const isCollapsed = collapsedGroups[groupName];
+                      
+                      // Filter metrics rows based on metric search query
+                      const visibleRows = rows.filter(row => {
+                        const matchesSearch = row.label.toLowerCase().includes(metricSearchQuery.toLowerCase());
+                        const matchesIdentical = !hideIdentical || !checkIsRowIdentical(row, sortedComparedApis);
+                        return matchesSearch && matchesIdentical;
+                      });
+
+                      // Skip rendering this category block entirely if no rows match the active filter queries
+                      if (visibleRows.length === 0) return null;
+
+                      return (
+                        <div key={groupName} id={`metric-group-${groupName}`} className="flex flex-col">
+                          
+                          {/* Group Header */}
+                          <div 
+                            onClick={() => setCollapsedGroups(prev => ({ ...prev, [groupName]: !isCollapsed }))}
+                            className="grid bg-[#181B20]/60 text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-wider py-2.5 cursor-pointer border-b border-[#24272C] select-none hover:bg-[#181B20] transition-colors"
+                            style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
+                          >
+                            <div className="px-4 sticky left-0 bg-[#181B20] z-10 flex items-center space-x-1.5">
+                              <span>{isCollapsed ? "[+]" : "[-]"}</span>
+                              <span>{groupName}</span>
+                            </div>
+                          </div>
+
+                          {/* Rows */}
+                          {!isCollapsed && visibleRows.map(row => {
+                            const isPinned = pinnedMetricKeys.includes(row.key);
+                            const classifications = getMetricClassifications(row, sortedComparedApis);
+                            return (
+                              <div 
+                                key={row.key}
+                                className="grid items-center hover:bg-[#181B20]/25 border-b border-[#24272C]/40 last:border-b-0 py-2.5 text-xs font-mono transition-colors"
+                                style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
+                              >
+                                <div className="px-4 pr-2 border-r border-[#24272C]/60 sticky left-0 bg-[#121417] z-10 flex items-center justify-between">
+                                  <span className="text-zinc-400">{row.label}</span>
+                                  <button 
+                                    onClick={() => {
+                                      if (isPinned) {
+                                        setPinnedMetricKeys(prev => prev.filter(k => k !== row.key));
+                                      } else {
+                                        setPinnedMetricKeys(prev => [...prev, row.key]);
+                                      }
+                                    }}
+                                    className={`pl-1 text-[11px] transition-colors ${isPinned ? "text-amber-500" : "text-zinc-600 hover:text-zinc-300"}`}
+                                  >
+                                    ★
+                                  </button>
+                                </div>
+                                {sortedComparedApis.map(api => {
+                                  const rawVal = row.get(api);
+                                  const cls = classifications[api.id];
+                                  return (
+                                    <div key={api.id} className="px-4 border-r border-[#24272C]/40 last:border-r-0 space-y-1.5">
+                                      <div className="flex items-center justify-between">
+                                        <span className={`font-semibold ${
+                                          cls === "best" ? "text-emerald-400" : cls === "weakest" ? "text-amber-400" : cls === "missing" ? "text-zinc-600" : "text-white"
+                                        }`}>{rawVal}</span>
+                                        
+                                        {/* Highlight tag */}
+                                        {cls === "best" && (
+                                          <span className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-1.5 py-0.25 rounded text-[8px] font-mono scale-90">Best</span>
+                                        )}
+                                        {cls === "weakest" && (
+                                          <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.25 rounded text-[8px] font-mono scale-90">Weakest</span>
+                                        )}
+                                      </div>
+
+                                      {/* Visual progress bar */}
+                                      {row.type && cls !== "missing" && (
+                                        <div className="w-full bg-[#181B20] h-1 rounded overflow-hidden">
+                                          {(() => {
+                                            const numeric = typeof rawVal === 'number' ? rawVal : parseFloat(String(rawVal).replace(/[^0-9.]/g, ''));
+                                            const pct = Math.max(0, Math.min(100, ((numeric - row.min) / (row.max - row.min)) * 100));
+                                            return (
+                                              <div 
+                                                className={`h-full ${
+                                                  cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-[#4F8CFF]"
+                                                }`}
+                                                style={{ width: `${pct}%` }}
+                                              />
+                                            );
+                                          })()}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+
                   </div>
                 </div>
+
               </div>
             )}
 
