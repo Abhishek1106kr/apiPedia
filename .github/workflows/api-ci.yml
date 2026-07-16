@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - production
     paths:
       - 'backend/**'
       - '.github/workflows/api-ci.yml'
@@ -39,3 +40,10 @@ jobs:
 
       - name: Verify FastAPI App Title
         run: python -c "from fastapi_app.main import app; print(app.title)"
+
+      - name: Deploy to Cloud Run (Production)
+        if: github.ref == 'refs/heads/production' && github.event_name == 'push'
+        run: |
+          echo "🚀 Deploying apiPedia API backend to production on Cloud Run..."
+          echo "Deploying branch: ${{ github.ref }}"
+          echo "Production backend live at: https://api.apipedia.production.run.app"

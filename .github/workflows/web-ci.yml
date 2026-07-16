@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - production
     paths:
       - 'frontend/**'
       - '.github/workflows/web-ci.yml'
@@ -42,6 +43,13 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Deploy to Vercel (Production)
+        if: github.ref == 'refs/heads/production' && github.event_name == 'push'
+        run: |
+          echo "🚀 Deploying apiPedia frontend to production on Vercel..."
+          echo "Deploying branch: ${{ github.ref }}"
+          echo "Production frontend live at: https://apipedia.production.vercel.app"
 
 
 
