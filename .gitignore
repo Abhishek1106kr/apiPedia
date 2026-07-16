@@ -3,8 +3,10 @@ backend/venv/
 __pycache__/
 *.pyc
 
+# Node / NPM
+node_modules/
+
 # Next.js
-frontend/node_modules/
 frontend/.next/
 
 # Environment files

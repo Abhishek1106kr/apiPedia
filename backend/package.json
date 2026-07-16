@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:django": "python manage.py runserver 8000",
+    "dev:fastapi": "uvicorn fastapi_app.main:app --reload --port 8001",
+    "dev": "concurrently --kill-others --names \"django,fastapi\" -c \"blue,yellow\" \"npm run dev:django\" \"npm run dev:fastapi\"",
+    "pip-install": "pip install -r requirements.txt"
+  }
+}
