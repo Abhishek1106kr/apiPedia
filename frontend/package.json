@@ -1,13 +1,14 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "echo \"No tests specified yet\" && exit 0"
+    "test": "node src/app/utils.test.js"
   },
   "dependencies": {
     "next": "16.2.10",
