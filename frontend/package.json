@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node src/app/utils.test.js"
+    "test": "node __tests__/utils.test.js"
   },
   "dependencies": {
     "next": "16.2.10",
