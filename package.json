@@ -1,22 +1,28 @@
 {
-  "name": "apipedia-monorepo",
-  "version": "1.0.0",
+  "name": "frontend",
+  "version": "0.1.0",
+  "type": "module",
   "private": true,
-  "description": "Monorepo for apiPedia frontend and backend",
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
-    "build": "npm run build --workspace=frontend",
-    "install:all": "npm install && npm run pip-install --workspace=backend",
-    "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
-    "dev:django": "npm run dev:django --workspace=backend",
-    "dev:fastapi": "npm run dev:fastapi --workspace=backend",
-    "dev": "concurrently --kill-others --names \"frontend,backend\" -c \"cyan,magenta\" \"npm run dev:frontend\" \"npm run dev:backend\""
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "node __tests__/utils.test.js"
+  },
+  "dependencies": {
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "tailwindcss": "^4",
+    "typescript": "^7.0.2"
   }
 }
