@@ -7,9 +7,23 @@ services:
       POSTGRES_PASSWORD: apipedia
       POSTGRES_DB: apipedia
     ports:
-      - "5432:5432"
+      # Mapped to a non-default host port: 5432 commonly collides with a
+      # locally installed Postgres service (it did in development here — a
+      # native postgres.exe was already bound to 5432 on the host, silently
+      # shadowing this container's forwarded port). Change back to "5432:5432"
+      # if nothing else on your machine uses 5432.
+      - "5434:5432"
     volumes:
       - apipedia_postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - apipedia_redis_data:/data
+
 volumes:
   apipedia_postgres_data:
+  apipedia_redis_data:
