@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { APIS, CATEGORIES } from "./data";
+import CommandPalette from "@/components/CommandPalette";
+import KeyboardShortcutsModal from "@/components/KeyboardShortcutsModal";
 
 const placeholders = [
   "Search Stripe...",
@@ -2039,127 +2041,25 @@ export default function ApiPediaApp() {
 
       </main>
 
-      {/* =============================================================== */}
-      {/* OVERLAY: RAYCAST-STYLE GLOBAL COMMAND PALETTE */}
-      {/* =============================================================== */}
-      {commandPaletteOpen && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-24 px-4">
-          <div className="w-full max-w-xl bg-[#121417] border border-[#24272C] rounded-xl shadow-2xl overflow-hidden flex flex-col font-sans">
-            
-            {/* Header / Input */}
-            <div className="p-3 border-b border-[#24272C] flex items-center space-x-3">
-              <span className="text-zinc-500">⌘</span>
-              <input
-                type="text"
-                autoFocus
-                className="flex-1 bg-transparent border-none text-xs text-white placeholder-zinc-500 outline-none"
-                placeholder="Search APIs, command routes, or directories..."
-                value={commandPaletteQuery}
-                onChange={(e) => setCommandPaletteQuery(e.target.value)}
-              />
-              <span 
-                onClick={() => setCommandPaletteOpen(false)}
-                className="text-[10px] text-zinc-500 hover:text-white cursor-pointer font-mono"
-              >
-                [ESC]
-              </span>
-            </div>
+      <CommandPalette
+        open={commandPaletteOpen}
+        query={commandPaletteQuery}
+        onQueryChange={setCommandPaletteQuery}
+        onClose={() => setCommandPaletteOpen(false)}
+        apis={APIS}
+        onSelectApi={handleCommandPaletteSelect}
+        quickNavCommands={[
+          { label: "Go to Benchmark Matrix", target: () => { setActiveTab("benchmarks"); setSelectedApi(null); setCommandPaletteOpen(false); } },
+          { label: "Go to Compare panel", target: () => { setActiveTab("compare"); setSelectedApi(null); setCommandPaletteOpen(false); } },
+          { label: "Go to API Categories", target: () => { setActiveTab("categories"); setSelectedApi(null); setCommandPaletteOpen(false); } },
+          { label: "Go to API Reference Docs", target: () => { setActiveTab("docs"); setSelectedApi(null); setCommandPaletteOpen(false); } }
+        ]}
+      />
 
-            {/* Results body */}
-            <div className="max-h-[300px] overflow-y-auto p-2 space-y-1">
-              <span className="text-[10px] text-zinc-500 font-mono pl-2 block my-1">APIs matched</span>
-              {APIS
-                .filter(a => a.name.toLowerCase().includes(commandPaletteQuery.toLowerCase()))
-                .map(api => (
-                  <div
-                    key={api.id}
-                    onClick={() => handleCommandPaletteSelect(api)}
-                    className="p-2.5 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-lg cursor-pointer flex items-center justify-between text-xs transition-all group"
-                  >
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-3 h-3 rounded" style={{ backgroundColor: api.logoColor }}></div>
-                      <span className="text-white font-semibold">{api.name}</span>
-                      <span className="text-zinc-500 text-[10px] font-mono">({api.category})</span>
-                    </div>
-                    <span className="text-[10px] text-zinc-500 group-hover:text-[#4F8CFF] font-mono">Open API intelligence ➔</span>
-                  </div>
-                ))}
-              
-              <span className="text-[10px] text-zinc-500 font-mono pl-2 block my-2">Quick Navigation Shortcuts</span>
-              {[
-                { label: "Go to Benchmark Matrix", target: () => { setActiveTab("benchmarks"); setSelectedApi(null); setCommandPaletteOpen(false); } },
-                { label: "Go to Compare panel", target: () => { setActiveTab("compare"); setSelectedApi(null); setCommandPaletteOpen(false); } },
-                { label: "Go to API Categories", target: () => { setActiveTab("categories"); setSelectedApi(null); setCommandPaletteOpen(false); } },
-                { label: "Go to API Reference Docs", target: () => { setActiveTab("docs"); setSelectedApi(null); setCommandPaletteOpen(false); } }
-              ].map((cmd, idx) => (
-                <div
-                  key={idx}
-                  onClick={cmd.target}
-                  className="p-2.5 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-lg cursor-pointer flex items-center justify-between text-xs transition-all text-zinc-300 hover:text-white"
-                >
-                  <span>{cmd.label}</span>
-                  <span className="text-[10px] text-zinc-500 font-mono">CMD route</span>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* =============================================================== */}
-      {/* OVERLAY: KEYBOARD SHORTCUTS INSTRUCTIONS CHEATSHEET */}
-      {/* =============================================================== */}
-      {keyboardModalOpen && (
-        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#121417] border border-[#24272C] rounded-xl p-6 space-y-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#24272C] pb-3">
-              <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Keyboard Shortcuts Console</h3>
-              <button 
-                onClick={() => setKeyboardModalOpen(false)}
-                className="text-zinc-500 hover:text-white text-xs font-mono"
-              >
-                [Close]
-              </button>
-            </div>
-
-            <div className="space-y-3.5 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Press /</span>
-                <span className="text-white font-bold">Focus Search Field</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Cmd + K</span>
-                <span className="text-white font-bold">Open Command Console</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Press G</span>
-                <span className="text-white font-bold">Redirect to GitHub repo</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Press D</span>
-                <span className="text-white font-bold">Open Endpoints Reference</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Press P</span>
-                <span className="text-white font-bold">Navigate to playground sandbox</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Press C</span>
-                <span className="text-white font-bold">Redirect to Comparison Matrix</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#24272C]">
-                <span className="text-zinc-500">Press ?</span>
-                <span className="text-white font-bold">Open Keyboard Shortcuts Panel</span>
-              </div>
-            </div>
-
-            <div className="p-3 bg-[#181B20] border border-[#24272C] rounded-lg text-[10px] text-zinc-500 leading-relaxed font-mono">
-              Designed for speed. Control the entire workspace flow directly from your home row keybindings.
-            </div>
-          </div>
-        </div>
-      )}
+      <KeyboardShortcutsModal
+        open={keyboardModalOpen}
+        onClose={() => setKeyboardModalOpen(false)}
+      />
 
       {/* Footer Details */}
       <footer className="border-t border-[#24272C] py-6 text-center text-[10px] text-zinc-600 font-mono mt-12 bg-[#0B0D10]">

@@ -6,7 +6,7 @@ import {
   getMetricClassifications, 
   checkIsRowIdentical, 
   sortComparedApis 
-} from "../src/app/utils.js";
+} from "../src/app/utils.ts";
 
 // Mock data mapping basic API properties for tests
 const mockApis = [

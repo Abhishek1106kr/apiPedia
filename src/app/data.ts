@@ -1,4 +1,6 @@
-export const APIS = [
+import type { ApiEntry } from "@/types/api";
+
+export const APIS: ApiEntry[] = [
   {
     id: "stripe",
     name: "Stripe",
