@@ -1,5 +1,14 @@
+import type {
+  ApiEntry,
+  MetricClassification,
+  MetricGroups,
+  MetricRow,
+  MetricValue,
+  SortBy,
+} from "@/types/api";
+
 // Collapsible metric rows grouped into 11 developer categories
-export const METRIC_GROUPS = {
+export const METRIC_GROUPS: MetricGroups = {
   "Overview": [
     { key: "category", label: "Category", get: (api) => api.category },
     { key: "health", label: "Health Score", get: (api) => api.vitals.healthScore, type: "progress", min: 80, max: 100, unit: "%" },
@@ -45,7 +54,7 @@ export const METRIC_GROUPS = {
   ]
 };
 
-export const getMetricValueType = (val) => {
+export const getMetricValueType = (val: MetricValue): "missing" | "normal" => {
   if (val === undefined || val === null || val === "" || String(val).includes("Missing") || String(val).includes("—")) {
     return "missing";
   }
@@ -53,8 +62,11 @@ export const getMetricValueType = (val) => {
 };
 
 // Computes best (green), average (neutral), weakest (orange), or missing (gray) categories dynamically
-export const getMetricClassifications = (metric, apis) => {
-  const classifications = {};
+export const getMetricClassifications = (
+  metric: MetricRow,
+  apis: ApiEntry[]
+): Record<string, MetricClassification> => {
+  const classifications: Record<string, MetricClassification> = {};
   if (!metric.type) {
     apis.forEach(api => {
       classifications[api.id] = getMetricValueType(metric.get(api)) === "missing" ? "missing" : "neutral";
@@ -64,7 +76,7 @@ export const getMetricClassifications = (metric, apis) => {
 
   const apiValues = apis.map(api => {
     const raw = metric.get(api);
-    if (getMetricValueType(raw) === "missing") return { apiId: api.id, val: null };
+    if (getMetricValueType(raw) === "missing") return { apiId: api.id, val: null as number | null };
     const num = typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.]/g, ''));
     return { apiId: api.id, val: isNaN(num) ? null : num };
   });
@@ -77,7 +89,7 @@ export const getMetricClassifications = (metric, apis) => {
     return classifications;
   }
 
-  const nums = validValues.map(av => av.val);
+  const nums = validValues.map(av => av.val as number);
   const minVal = Math.min(...nums);
   const maxVal = Math.max(...nums);
 
@@ -108,14 +120,14 @@ export const getMetricClassifications = (metric, apis) => {
 };
 
 // Check if all values are identical (for hide identical toggle filter)
-export const checkIsRowIdentical = (row, apis) => {
+export const checkIsRowIdentical = (row: MetricRow, apis: ApiEntry[]): boolean => {
   if (apis.length <= 1) return true;
   const firstVal = String(row.get(apis[0])).toLowerCase().trim();
   return apis.every(a => String(row.get(a)).toLowerCase().trim() === firstVal);
 };
 
 // Dynamically sorts active columns lists
-export const sortComparedApis = (apis, sortType) => {
+export const sortComparedApis = (apis: ApiEntry[], sortType: SortBy): ApiEntry[] => {
   return [...apis].sort((a, b) => {
     switch (sortType) {
       case "health":
@@ -128,10 +140,11 @@ export const sortComparedApis = (apis, sortType) => {
         return b.vitals.docsScore - a.vitals.docsScore;
       case "popularity":
         return b.vitals.popularity - a.vitals.popularity;
-      case "community":
+      case "community": {
         const starsA = parseFloat(a.vitals.community.replace(/[^0-9.]/g, '')) || 0;
         const starsB = parseFloat(b.vitals.community.replace(/[^0-9.]/g, '')) || 0;
         return starsB - starsA;
+      }
       case "alpha":
         return a.name.localeCompare(b.name);
       default:
