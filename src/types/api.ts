@@ -153,6 +153,25 @@ export interface ApiEntry {
   analytics: ApiAnalytics;
 }
 
+// Simulated (MOCK_) playground response — see docs/00-master-prompt.md §1 on
+// isolating simulated behavior. Phase 5's real playground runtime replaces
+// the function that produces this, not the shape consumers render.
+export interface PlaygroundResponseState {
+  status: number;
+  headers: Record<string, string>;
+  body: unknown;
+}
+
+export type DetailSubTab =
+  | "overview"
+  | "playground"
+  | "docs"
+  | "dna"
+  | "pain"
+  | "recipes"
+  | "paths"
+  | "analytics";
+
 export type MetricValue = string | number | undefined | null;
 
 export type MetricClassification = "best" | "weakest" | "neutral" | "missing";
