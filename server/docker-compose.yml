@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: apipedia
+      POSTGRES_PASSWORD: apipedia
+      POSTGRES_DB: apipedia
+    ports:
+      - "5432:5432"
+    volumes:
+      - apipedia_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  apipedia_postgres_data:
