@@ -1,9 +1,12 @@
 import type { FastifyInstance } from "fastify";
+import type { Prisma } from "@prisma/client";
 import { createContributionRepository } from "./repository.js";
 import { checkForSpam } from "./checks/spamDetector.js";
 import { checkForDuplicate } from "./checks/duplicateDetector.js";
 import { verifyGithubSource } from "./checks/githubVerifier.js";
 import { computeTrustScore } from "./trustScore.js";
+import { newApiPayloadSchema, correctionPayloadSchema } from "./payloadSchemas.js";
+import { publishContribution } from "./publish.js";
 import {
   submitContributionSchema,
   listContributionsQuerySchema,
@@ -20,6 +23,20 @@ export default async function contributionVerificationRoutes(fastify: FastifyIns
   // the approve/reject endpoints below.
   fastify.post("/contributions", async (request, reply) => {
     const input = submitContributionSchema.parse(request.body);
+
+    // Fail fast at submission, not at approval time: a payload that
+    // doesn't match the expected shape for its type is rejected outright
+    // rather than stored and discovered broken later during publish.
+    let payload: Record<string, unknown> | undefined = undefined;
+    if (input.payload !== undefined) {
+      if (input.type === "NEW_API") {
+        payload = newApiPayloadSchema.parse(input.payload);
+      } else if (input.type === "CORRECTION") {
+        payload = correctionPayloadSchema.parse(input.payload);
+      } else {
+        return reply.badRequest(`Contribution type "${input.type}" does not accept a structured payload.`);
+      }
+    }
 
     const spam = checkForSpam({ title: input.title, body: input.body });
     const isDuplicate = await checkForDuplicate(fastify.prisma, {
@@ -42,6 +59,7 @@ export default async function contributionVerificationRoutes(fastify: FastifyIns
       isDuplicate,
       githubVerified,
       trustScore,
+      payload: payload as Prisma.InputJsonValue | undefined,
     });
 
     await repository.addAuditLog(contribution.id, "submitted", input.submitterHandle);
@@ -74,7 +92,16 @@ export default async function contributionVerificationRoutes(fastify: FastifyIns
 
     const updated = await repository.setStatus(params.id, "APPROVED");
     await repository.addAuditLog(params.id, "approved", action.actor, action.reason);
-    return updated;
+
+    const publishResult = await publishContribution(fastify.prisma, updated);
+    await repository.addAuditLog(
+      params.id,
+      publishResult.published ? "published" : "publish_skipped",
+      action.actor,
+      publishResult.published ? `Wrote ${publishResult.apiId} to the catalog` : publishResult.reason
+    );
+
+    return { ...updated, publishResult };
   });
 
   fastify.post("/contributions/:id/reject", { preHandler: fastify.requireAdmin }, async (request, reply) => {

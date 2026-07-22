@@ -83,6 +83,15 @@ model Contribution {
   githubVerified   Boolean?
   trustScore       Int
 
+  // Structured catalog data, present only when the submission is meant to
+  // actually change the catalog (NEW_API: a full ApiEntry-shaped object;
+  // CORRECTION: a partial one). Optional and separate from `body` (the
+  // free-text description a human reads) because most early contributions
+  // predate this field and are text-only — those still get moderated, they
+  // just can't be auto-published. See modules/contribution-verification/
+  // publish.ts for what happens with this on approval.
+  payload          Json?
+
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
