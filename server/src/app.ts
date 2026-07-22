@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import prismaPlugin from "./plugins/prisma.js";
 import apiCatalogRoutes from "./modules/api-catalog/routes.js";
 import contributionVerificationRoutes from "./modules/contribution-verification/routes.js";
+import playgroundRoutes from "./modules/playground/routes.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -31,6 +32,7 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await app.register(apiCatalogRoutes, { prefix: "/api" });
   await app.register(contributionVerificationRoutes, { prefix: "/api" });
+  await app.register(playgroundRoutes, { prefix: "/api" });
 
   return app;
 }
