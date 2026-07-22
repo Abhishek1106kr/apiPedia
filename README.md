@@ -58,17 +58,22 @@ graph TB
 
 ```
 .
-├── backend/            # Disposable legacy Django/FastAPI scaffold
-├── docs/               # Modular brand copy and documentation files
+├── backend/            # Disposable legacy Django/FastAPI scaffold — not built upon
+├── docs/               # 00-master-prompt.md (engineering standards, always current)
+│   │                    # API_REFERENCE.md (every backend endpoint, verified)
 │   ├── brand/          # Voice, tone, and UX writing templates
 │   ├── product/        # Onboarding flows, feature scopes, and FAQs
 │   ├── ui/             # Dynamic dashboard labels and state microcopy
 │   └── website/        # SEO configurations and landing page copies
-├── server/             # Production Fastify, Prisma, Postgres services
-└── src/                # Next.js frontend source files
-    ├── app/            # App routes and dashboard layout files
-    ├── components/     # Reusable client view components
-    └── lib/            # Local SDK scripts and proxy APIs
+├── server/             # Fastify + Prisma + Postgres backend — see docs/API_REFERENCE.md
+│   └── src/modules/    # api-catalog, contribution-verification, playground,
+│                       # monitoring, ai, search — one folder per bounded concern
+└── src/                # Next.js frontend
+    ├── app/            # Routes, layout, providers.tsx (TanStack Query setup)
+    ├── components/     # View components, api-detail/ for the 8 detail sub-tabs
+    ├── hooks/          # useApis (real catalog fetch), useKeyboardShortcuts
+    ├── lib/            # api-client.ts — typed fetch wrapper for the backend
+    └── types/          # ApiEntry and friends
 ```
 
 ---
@@ -81,25 +86,24 @@ Ensure you have the following installed locally:
 * Docker (for the backend's Postgres and Redis)
 * Git CLI
 
-### 2. Frontend
-```bash
-git clone https://github.com/Abhishek1106kr/apiPedia.git
-cd apiPedia
-npm install
-npm run dev
-```
-Open `http://localhost:3000` — this alone gets you the dashboard against its
-built-in mock dataset (`src/app/data.ts`). It does not talk to the backend
-below yet; that integration is still in progress.
+**Start the backend first** (step 3 below) — the frontend now fetches the
+real catalog from it (`GET /api/apis`) instead of the old hardcoded mock
+array. If the backend isn't running, the dashboard shows a real error
+state, not fallback data.
 
-### 3. Backend (`server/`)
+### 2. Backend (`server/`)
 ```bash
 cd server
 npm install
-cp .env.example .env        # then fill in GROQ_API_KEY if you want the AI routes
+cp .env.example .env        # fill in GROQ_API_KEY (AI routes) and ADMIN_API_TOKEN (see below)
 docker compose up -d        # Postgres + Redis
 npx prisma migrate deploy   # apply the schema
 npm run dev                 # Fastify on :4000
+```
+Generate an `ADMIN_API_TOKEN` (guards contribution moderation and the
+manual monitoring trigger — see `docs/API_REFERENCE.md`):
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 Two optional long-running workers, each in its own terminal:
 ```bash
@@ -107,7 +111,23 @@ npm run ingest:worker    # processes queued ingestion jobs (Phase 3)
 npm run monitor:worker   # checks every known API's reachability every 5 minutes (Phase 6)
 ```
 
+### 3. Frontend
+```bash
+git clone https://github.com/Abhishek1106kr/apiPedia.git
+cd apiPedia
+npm install
+cp .env.example .env.local   # NEXT_PUBLIC_API_URL, defaults to http://localhost:4000
+npm run dev
+```
+Open `http://localhost:3000`.
+
 ---
+
+## API Reference
+
+Every backend endpoint — request/response shapes, auth requirements, rate
+limits — is documented in [`docs/API_REFERENCE.md`](docs/API_REFERENCE.md),
+verified directly against the route code, not written from memory.
 
 ## CLI Tools
 
@@ -120,6 +140,7 @@ globally-installed `apipedia` binary):
 npm run ingest -- stripe
 
 # Run a check round against every known API right now, instead of waiting
-# for the monitor worker's next 5-minute tick
-curl -X POST http://localhost:4000/api/monitoring/run-now
+# for the monitor worker's next 5-minute tick (requires ADMIN_API_TOKEN)
+curl -X POST http://localhost:4000/api/monitoring/run-now \
+  -H "Authorization: Bearer <your ADMIN_API_TOKEN>"
 ```
