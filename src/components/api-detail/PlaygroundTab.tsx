@@ -39,6 +39,14 @@ export default function PlaygroundTab({
 }: PlaygroundTabProps) {
   const endpoint = api.endpoints[selectedEndpointIndex];
 
+  if (!endpoint) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No endpoints documented yet for {api.name} — nothing to run in the sandbox.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 border border-border rounded-xl overflow-hidden bg-surface">
 
@@ -69,11 +77,11 @@ export default function PlaygroundTab({
           <label className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">Endpoint & Method</label>
           <div className="flex space-x-2">
             <span className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono border ${
-              endpoint?.method === "POST"
+              endpoint.method === "POST"
                 ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
                 : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
             }`}>
-              {endpoint?.method}
+              {endpoint.method}
             </span>
             <select
               className="flex-1 bg-surface-2 border border-border rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-accent"
@@ -99,7 +107,7 @@ export default function PlaygroundTab({
         </div>
 
         {/* Body Input (only for POST requests) */}
-        {endpoint?.method === "POST" && (
+        {endpoint.method === "POST" && (
           <div className="space-y-2 flex-1 flex flex-col">
             <label className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">Request Body (JSON)</label>
             <textarea
@@ -145,14 +153,14 @@ export default function PlaygroundTab({
             <div className="bg-surface px-3 py-1.5 border-b border-border flex items-center justify-between">
               <span className="text-[10px] text-zinc-400 font-mono">Python Code Example</span>
               <button
-                onClick={() => onCopyText(endpoint?.codeExamples.python || "", "Python Code")}
+                onClick={() => onCopyText(endpoint.codeExamples.python || "", "Python Code")}
                 className="text-zinc-500 hover:text-white text-[10px] font-mono"
               >
                 [Copy Code]
               </button>
             </div>
             <pre className="p-3 text-[11px] font-mono text-zinc-300 overflow-auto whitespace-pre select-all bg-background/50 flex-1">
-              {endpoint?.codeExamples.python}
+              {endpoint.codeExamples.python}
             </pre>
           </div>
         </div>

@@ -8,6 +8,17 @@ interface PainTabProps {
 }
 
 export default function PainTab({ api, onExplainError }: PainTabProps) {
+  // Real, freshly-published entries start with painIndex: {} — this is
+  // aggregated from community channels separately, not typed in at
+  // submission time.
+  if (!api.painIndex.topComplaints) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No developer pain index data yet for {api.name}.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 

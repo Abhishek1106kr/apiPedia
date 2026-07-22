@@ -17,6 +17,19 @@ function buildLinePoints(values: number[], min: number, max: number) {
 }
 
 export default function AnalyticsTab({ api }: AnalyticsTabProps) {
+  // Real, freshly-published entries start with analytics: {}. The backend's
+  // monitoring module (server/src/modules/monitoring) collects real
+  // reachability/latency history for exactly this kind of chart — wiring
+  // this tab to GET /api/monitoring/:apiId/history is the natural next
+  // step, not done yet.
+  if (!api.analytics.latency || api.analytics.latency.length === 0) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No analytics history yet for {api.name}.
+      </div>
+    );
+  }
+
   const latencyPts = api.analytics.latency;
   const latencyMin = Math.min(...latencyPts) - 10;
   const latencyMax = Math.max(...latencyPts) + 10;

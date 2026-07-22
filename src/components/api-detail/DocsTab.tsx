@@ -12,6 +12,14 @@ interface DocsTabProps {
 export default function DocsTab({ api, selectedEndpointIndex, onSelectEndpoint, onCopyText }: DocsTabProps) {
   const ep = api.endpoints[selectedEndpointIndex] || api.endpoints[0];
 
+  if (!ep) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No endpoints documented yet for {api.name}.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 

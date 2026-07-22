@@ -1,5 +1,6 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import sensible from "@fastify/sensible";
+import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { ZodError } from "zod";
 import prismaPlugin from "./plugins/prisma.js";
@@ -19,6 +20,13 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(sensible);
   await app.register(prismaPlugin);
   await app.register(authPlugin);
+
+  // No user-facing cookies/sessions exist yet (see plugins/auth.ts), so
+  // credentials stay disabled — this only needs to let the frontend's
+  // origin read JSON responses, nothing more permissive than that.
+  await app.register(cors, {
+    origin: (process.env.CORS_ORIGIN ?? "http://localhost:3000").split(","),
+  });
 
   // Global default; routes that hit paid/costly third-party APIs (Groq)
   // set a stricter per-route override — see modules/ai/routes.ts.

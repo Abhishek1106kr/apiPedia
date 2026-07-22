@@ -7,6 +7,17 @@ interface DnaTabProps {
 }
 
 export default function DnaTab({ api }: DnaTabProps) {
+  // Real, freshly-published catalog entries start with dna: {} — DNA
+  // vectors/similarity/timeline are computed later, not typed in at
+  // submission (see server/src/modules/contribution-verification/publish.ts).
+  if (!api.dna.radar) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No API DNA data yet for {api.name}. This is computed by a separate analysis pass, not available at submission time.
+      </div>
+    );
+  }
+
   const r = api.dna.radar;
   const p1 = 100 - r.auth * 0.8;
   const p2x = 100 + r.performance * 0.8 * 0.95;

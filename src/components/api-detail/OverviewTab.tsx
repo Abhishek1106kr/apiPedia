@@ -13,7 +13,7 @@ export default function OverviewTab({ api }: OverviewTabProps) {
     { label: "SDK Quality", value: `${api.vitals.sdkScore}/10`, detail: "Excellent coverage", color: "text-amber-500" },
     { label: "Average Latency", value: `${api.vitals.latency}ms`, detail: "Global p50 metric", color: "text-white" },
     { label: "Monthly Uptime", value: `${api.vitals.uptime}%`, detail: "SLA Guaranteed", color: "text-emerald-500" },
-    { label: "Security Profile", value: api.vitals.security.split(",")[0], detail: "Enterprise standard", color: "text-white" },
+    { label: "Security Profile", value: api.vitals.security?.split(",")[0] ?? "—", detail: "Enterprise standard", color: "text-white" },
     { label: "Last Sync Commit", value: api.vitals.lastUpdated, detail: "Automatic monitoring", color: "text-zinc-400" },
     { label: "Rate Limits", value: api.vitals.rateLimit, detail: "Standard tier", color: "text-white" },
     { label: "Authentication", value: api.vitals.authType, detail: "Key handshake", color: "text-white" },
@@ -67,7 +67,7 @@ export default function OverviewTab({ api }: OverviewTabProps) {
           </div>
           <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">SDK Maturity:</span>
-            <span className="text-zinc-300 font-medium text-right max-w-[150px] truncate">{api.dna.sdkMaturity.split(" ")[0]}</span>
+            <span className="text-zinc-300 font-medium text-right max-w-[150px] truncate">{api.dna.sdkMaturity?.split(" ")[0] ?? "—"}</span>
           </div>
         </div>
 

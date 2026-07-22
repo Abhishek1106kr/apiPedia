@@ -19,6 +19,7 @@
     "prisma:validate": "prisma validate"
   },
   "dependencies": {
+    "@fastify/cors": "^10.0.2",
     "@fastify/rate-limit": "^10.2.1",
     "@fastify/sensible": "^6.0.2",
     "@prisma/adapter-pg": "^6.1.0",
