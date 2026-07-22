@@ -8,6 +8,14 @@ interface RecipesTabProps {
 }
 
 export default function RecipesTab({ api, onCopyText }: RecipesTabProps) {
+  if (api.recipes.length === 0) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No community recipes yet for {api.name}.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {api.recipes.map((recipe, idx) => (

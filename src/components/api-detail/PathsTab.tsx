@@ -7,6 +7,14 @@ interface PathsTabProps {
 }
 
 export default function PathsTab({ api }: PathsTabProps) {
+  if (api.paths.length === 0) {
+    return (
+      <div className="bg-surface border border-border rounded-xl p-8 text-center text-zinc-500 text-sm">
+        No learning paths yet for {api.name}.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {api.paths.map((path, idx) => (

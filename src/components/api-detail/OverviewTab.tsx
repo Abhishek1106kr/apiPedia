@@ -6,17 +6,25 @@ interface OverviewTabProps {
   api: ApiEntry;
 }
 
+// Real, freshly-published entries start with vitals: {} — every field is
+// individually optional until ingestion/monitoring populate it, so every
+// display value here needs a "—" fallback rather than rendering the
+// literal string "undefined".
+function fmt(value: string | number | undefined, suffix = ""): string {
+  return value === undefined || value === null ? "—" : `${value}${suffix}`;
+}
+
 export default function OverviewTab({ api }: OverviewTabProps) {
   const metrics = [
-    { label: "Health Score", value: `${api.vitals.healthScore}%`, detail: "Operational Status", color: "text-emerald-500" },
-    { label: "Documentation Quality", value: `${api.vitals.docsScore}/10`, detail: "Highly readable", color: "text-accent" },
-    { label: "SDK Quality", value: `${api.vitals.sdkScore}/10`, detail: "Excellent coverage", color: "text-amber-500" },
-    { label: "Average Latency", value: `${api.vitals.latency}ms`, detail: "Global p50 metric", color: "text-white" },
-    { label: "Monthly Uptime", value: `${api.vitals.uptime}%`, detail: "SLA Guaranteed", color: "text-emerald-500" },
+    { label: "Health Score", value: fmt(api.vitals.healthScore, "%"), detail: "Operational Status", color: "text-emerald-500" },
+    { label: "Documentation Quality", value: fmt(api.vitals.docsScore, "/10"), detail: "Highly readable", color: "text-accent" },
+    { label: "SDK Quality", value: fmt(api.vitals.sdkScore, "/10"), detail: "Excellent coverage", color: "text-amber-500" },
+    { label: "Average Latency", value: fmt(api.vitals.latency, "ms"), detail: "Global p50 metric", color: "text-white" },
+    { label: "Monthly Uptime", value: fmt(api.vitals.uptime, "%"), detail: "SLA Guaranteed", color: "text-emerald-500" },
     { label: "Security Profile", value: api.vitals.security?.split(",")[0] ?? "—", detail: "Enterprise standard", color: "text-white" },
-    { label: "Last Sync Commit", value: api.vitals.lastUpdated, detail: "Automatic monitoring", color: "text-zinc-400" },
-    { label: "Rate Limits", value: api.vitals.rateLimit, detail: "Standard tier", color: "text-white" },
-    { label: "Authentication", value: api.vitals.authType, detail: "Key handshake", color: "text-white" },
+    { label: "Last Sync Commit", value: fmt(api.vitals.lastUpdated), detail: "Automatic monitoring", color: "text-zinc-400" },
+    { label: "Rate Limits", value: fmt(api.vitals.rateLimit), detail: "Standard tier", color: "text-white" },
+    { label: "Authentication", value: fmt(api.vitals.authType), detail: "Key handshake", color: "text-white" },
   ];
 
   return (
@@ -49,21 +57,21 @@ export default function OverviewTab({ api }: OverviewTabProps) {
         <div className="space-y-4 text-xs font-mono">
           <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">API Version:</span>
-            <span className="text-zinc-300 font-medium">{api.vitals.version}</span>
+            <span className="text-zinc-300 font-medium">{fmt(api.vitals.version)}</span>
           </div>
           <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">Response Format:</span>
-            <span className="text-zinc-300 font-medium">{api.vitals.responseFormat}</span>
+            <span className="text-zinc-300 font-medium">{fmt(api.vitals.responseFormat)}</span>
           </div>
           <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">Difficulty Curve:</span>
-            <span className={`font-semibold ${api.vitals.difficulty === "Easy" ? "text-emerald-500" : api.vitals.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"}`}>
-              {api.vitals.difficulty}
+            <span className={`font-semibold ${api.vitals.difficulty === "Easy" ? "text-emerald-500" : api.vitals.difficulty === "Medium" ? "text-amber-500" : api.vitals.difficulty === "Hard" ? "text-rose-500" : "text-zinc-500"}`}>
+              {fmt(api.vitals.difficulty)}
             </span>
           </div>
           <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">GitHub Commits:</span>
-            <span className="text-zinc-300 font-medium">{api.vitals.commitsCount}</span>
+            <span className="text-zinc-300 font-medium">{fmt(api.vitals.commitsCount)}</span>
           </div>
           <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">SDK Maturity:</span>
