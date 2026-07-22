@@ -78,33 +78,48 @@ graph TB
 ### 1. Requirements
 Ensure you have the following installed locally:
 * Node.js v22.x or later
+* Docker (for the backend's Postgres and Redis)
 * Git CLI
 
-### 2. Install Dependencies
-Clone the repository and install the npm workspace packages:
+### 2. Frontend
 ```bash
 git clone https://github.com/Abhishek1106kr/apiPedia.git
 cd apiPedia
 npm install
-```
-
-### 3. Run Development Server
-Boot the Next.js development server:
-```bash
 npm run dev
 ```
-Open your browser and navigate to `http://localhost:3000` to interact with the dashboard.
+Open `http://localhost:3000` — this alone gets you the dashboard against its
+built-in mock dataset (`src/app/data.ts`). It does not talk to the backend
+below yet; that integration is still in progress.
+
+### 3. Backend (`server/`)
+```bash
+cd server
+npm install
+cp .env.example .env        # then fill in GROQ_API_KEY if you want the AI routes
+docker compose up -d        # Postgres + Redis
+npx prisma migrate deploy   # apply the schema
+npm run dev                 # Fastify on :4000
+```
+Two optional long-running workers, each in its own terminal:
+```bash
+npm run ingest:worker    # processes queued ingestion jobs (Phase 3)
+npm run monitor:worker   # checks every known API's reachability every 5 minutes (Phase 6)
+```
 
 ---
 
-## Platform CLI Tools
+## CLI Tools
 
-APIPEDIA includes a local tool to support sandbox configurations. Install and verify:
+The real local tooling that exists today lives in `server/` (there is no
+globally-installed `apipedia` binary):
 
 ```bash
-# Query health benchmarks from edge runners
-apipedia telemetry clerk
+# Fetch live GitHub + OpenAPI spec data for a known API id (see
+# server/src/ingestion/seeds.ts for the current list) and print the draft
+npm run ingest -- stripe
 
-# Run a local mock gateway on port 8080
-apipedia mock run clerk --port 8080
+# Run a check round against every known API right now, instead of waiting
+# for the monitor worker's next 5-minute tick
+curl -X POST http://localhost:4000/api/monitoring/run-now
 ```
