@@ -27,6 +27,7 @@ export default function ApiPediaApp() {
   const [activeTab, setActiveTab] = useState("home"); // 'home' | 'categories' | 'benchmarks' | 'compare' | 'docs'
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [docsActiveSection, setDocsActiveSection] = useState("quickstart");
   
   // Detail Page State
   const [selectedApi, setSelectedApi] = useState(null);
@@ -2013,26 +2014,193 @@ export default function ApiPediaApp() {
             {/* STATE F: DOCUMENTATION TAB */}
             {/* =============================================================== */}
             {activeTab === "docs" && (
-              <div className="max-w-3xl mx-auto space-y-6">
-                <div className="border-b border-[#24272C] pb-4">
-                  <h2 className="text-xl font-bold text-white tracking-tight">API Reference Hub</h2>
-                  <p className="text-zinc-500 text-xs mt-1 font-mono">Core schemas and architectural details for apiPedia platforms.</p>
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 flex-1">
+                
+                {/* Docs Sidebar Navigation */}
+                <div className="lg:col-span-1 space-y-4">
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 font-mono pl-2">Platform Docs</h2>
+                  <nav className="space-y-1.5 bg-[#121417] border border-[#24272C] rounded-xl p-3">
+                    {[
+                      { id: "quickstart", label: "Quickstart Guide", icon: "🚀" },
+                      { id: "features", label: "Core Platform Features", icon: "🛠️" },
+                      { id: "cli", label: "APIPEDIA CLI Reference", icon: "💻" },
+                      { id: "faq", label: "Developer FAQ", icon: "❓" }
+                    ].map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => setDocsActiveSection(item.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-mono flex items-center space-x-2.5 transition-colors ${
+                          docsActiveSection === item.id 
+                            ? "bg-[#181B20] border border-[#24272C] text-[#4F8CFF] font-semibold" 
+                            : "hover:bg-[#181B20] text-zinc-400 hover:text-zinc-200"
+                        }`}
+                      >
+                        <span>{item.icon}</span>
+                        <span>{item.label}</span>
+                      </button>
+                    ))}
+                  </nav>
+
+                  <div className="p-4 bg-[#121417] border border-[#24272C] rounded-xl space-y-2 text-[10px] font-mono text-zinc-500">
+                    <div>DOCS_VERSION: v1.4.0</div>
+                    <div>LAST_REBUILD: 2026-07-22</div>
+                    <div>STATUS: ● CACHED</div>
+                  </div>
                 </div>
 
-                <div className="bg-[#121417] border border-[#24272C] rounded-xl p-6 space-y-4">
-                  <h3 className="text-sm font-bold text-white">General Architecture</h3>
-                  <p className="text-zinc-400 text-xs leading-relaxed font-sans">
-                    apiPedia provides direct access to developers evaluating payment gateways, auth systems, and AI models. 
-                    All data schemas are updated in real-time by scraping active repository commits and StackOverflow pipelines.
-                  </p>
+                {/* Docs Main Content Window */}
+                <div className="lg:col-span-3 bg-[#121417] border border-[#24272C] rounded-xl p-6 lg:p-8 space-y-6 overflow-auto max-h-[80vh] scrollbar-thin">
+                  
+                  {/* DOCS_SECTION: QUICKSTART */}
+                  {docsActiveSection === "quickstart" && (
+                    <div className="space-y-6">
+                      <div className="border-b border-[#24272C] pb-4">
+                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">GETTING_STARTED</span>
+                        <h2 className="text-xl font-bold text-white mt-1">Quickstart & Developer Onboarding</h2>
+                        <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
+                          Welcome to APIPEDIA. This guide gets you up and running with account setup, generating credentials, and executing sandbox queries in minutes.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-white">Step 1: Generate your API Key</h3>
+                        <p className="text-zinc-400 text-xs leading-relaxed">
+                          Navigate to the **Settings** menu inside your dashboard, locate the Developer credentials section, and click **Generate New API Key**. Make sure to save the generated token (prefix `ap_dev_...`) as it is only displayed once.
+                        </p>
+
+                        <h3 className="text-sm font-bold text-white">Step 2: Install the APIPEDIA CLI</h3>
+                        <p className="text-zinc-400 text-xs leading-relaxed">
+                          We distribute the CLI binary through standard installers. Run the appropriate command for your platform:
+                        </p>
+                        <div className="bg-[#181B20] border border-[#24272C] rounded-lg overflow-hidden">
+                          <div className="bg-[#121417] px-4 py-2 border-b border-[#24272C] flex items-center justify-between text-[10px] text-zinc-500 font-mono">
+                            <span>Install CLI Command</span>
+                            <button onClick={() => handleCopyText("brew install apipedia/tap/apipedia", "CLI install")} className="hover:text-white">[Copy]</button>
+                          </div>
+                          <pre className="p-4 text-[11px] font-mono text-zinc-300 overflow-auto">
+                            {`# macOS (Homebrew)\nbrew install apipedia/tap/apipedia\n\n# Linux / Windows (curl bash wrapper)\ncurl -fsSL https://get.apipedia.dev | sh`}
+                          </pre>
+                        </div>
+
+                        <h3 className="text-sm font-bold text-white">Step 3: Authenticate the local CLI</h3>
+                        <p className="text-zinc-400 text-xs leading-relaxed">
+                          Run the login command in your terminal and input your developer API key when prompted:
+                        </p>
+                        <pre className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg text-[11px] font-mono text-[#4F8CFF] overflow-auto">
+                          {`$ apipedia auth login\nInput API key: ap_dev_********************\nAuthentication successful. Logged in as: alex@company.com`}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* DOCS_SECTION: FEATURES */}
+                  {docsActiveSection === "features" && (
+                    <div className="space-y-6">
+                      <div className="border-b border-[#24272C] pb-4">
+                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">PLATFORM_FEATURES</span>
+                        <h2 className="text-xl font-bold text-white mt-1">Core Platform Architecture</h2>
+                        <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
+                          Explore the four architectural blocks that power the APIPEDIA developer intelligence catalog.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                          <span className="text-xs font-bold text-white">1. Dual-Mode Playground</span>
+                          <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
+                            Run **Simulated Sandbox Mode** directly client-side using OpenAPI schemas, or switch to **Live Mode** utilizing local proxies to run requests directly without exposing keys.
+                          </p>
+                        </div>
+                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                          <span className="text-xs font-bold text-white">2. Invisible AI Debugging</span>
+                          <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
+                            Intercept failed responses instantly. The AI parser maps status errors against OpenAPI constraints to suggest direct schema corrections.
+                          </p>
+                        </div>
+                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                          <span className="text-xs font-bold text-white">3. Global Edge Telemetry</span>
+                          <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
+                            We execute stateless health checks every 60 seconds across US-East, EU-Central, AP-South, SA-East, and US-West hubs, checking uptime and response payload structures.
+                          </p>
+                        </div>
+                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                          <span className="text-xs font-bold text-white">4. API DNA Mapping</span>
+                          <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
+                            By vectorizing endpoints, auth profiles, and parameters, our similarity engine aligns APIs side-by-side (e.g., comparing Clerk to Auth0 or Stripe to Adyen).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* DOCS_SECTION: CLI */}
+                  {docsActiveSection === "cli" && (
+                    <div className="space-y-6">
+                      <div className="border-b border-[#24272C] pb-4">
+                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">CLI_REFERENCE</span>
+                        <h2 className="text-xl font-bold text-white mt-1">APIPEDIA Command Line Interface</h2>
+                        <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
+                          Automate your local environment, query telemetries, and download schemas from the terminal.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4 font-mono text-xs">
+                        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                          <div className="text-white font-bold">$ apipedia telemetry [api-id]</div>
+                          <div className="text-zinc-500 text-[11px] font-sans">Query edge latency percentiles, monthly uptime, and active SDK details.</div>
+                        </div>
+
+                        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                          <div className="text-white font-bold">$ apipedia schema download [api-id] --format json</div>
+                          <div className="text-zinc-500 text-[11px] font-sans">Download the verified OpenAPI specification file to your directory.</div>
+                        </div>
+
+                        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                          <div className="text-white font-bold">$ apipedia mock run [api-id] --port 8080</div>
+                          <div className="text-zinc-500 text-[11px] font-sans">Boot a local HTTP mock server validating request schemas offline.</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* DOCS_SECTION: FAQ */}
+                  {docsActiveSection === "faq" && (
+                    <div className="space-y-6">
+                      <div className="border-b border-[#24272C] pb-4">
+                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">RESOURCES_FAQ</span>
+                        <h2 className="text-xl font-bold text-white mt-1">Frequently Asked Questions</h2>
+                        <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
+                          Quick reference for billing, self-hosting configurations, and latency metrics.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4 text-xs font-sans">
+                        <div className="space-y-1">
+                          <strong className="text-white block text-sm">How is regional latency calculated?</strong>
+                          <p className="text-zinc-400 leading-relaxed text-[11px]">
+                            We measure real-time connection speeds via edge probes querying active GET endpoints every minute. The statistics display a 24h rolling median (`p50`) average.
+                          </p>
+                        </div>
+
+                        <div className="space-y-1 border-t border-[#24272C]/60 pt-3">
+                          <strong className="text-white block text-sm">Can APIPEDIA run inside our private subnet?</strong>
+                          <p className="text-zinc-400 leading-relaxed text-[11px]">
+                            Yes. The core catalog engine is Apache 2.0 open source. You can run docker compose files or Helm charts locally. Enterprise VPC licenses are available for private service gateway integrations.
+                          </p>
+                        </div>
+
+                        <div className="space-y-1 border-t border-[#24272C]/60 pt-3">
+                          <strong className="text-white block text-sm">Does the playground store credentials?</strong>
+                          <p className="text-zinc-400 leading-relaxed text-[11px]">
+                            No. Your keys are cached client-side in the browser storage or run locally through proxy pipelines. They never transit the central APIPEDIA databases.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                 </div>
 
-                <div className="bg-[#121417] border border-[#24272C] rounded-xl p-6 space-y-4">
-                  <h3 className="text-sm font-bold text-white">Security & Scopes</h3>
-                  <p className="text-zinc-400 text-xs leading-relaxed font-sans">
-                    All API tokens validated on our playhouses are client-side only. We do not cache or store personal developer keys or credentials.
-                  </p>
-                </div>
               </div>
             )}
 
