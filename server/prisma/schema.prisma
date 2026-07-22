@@ -104,3 +104,22 @@ model AuditLog {
   @@index([contributionId])
   @@map("audit_logs")
 }
+
+// One row per real reachability check against a monitored API. "Dynamic
+// stats" (current status, uptime %, average latency) are computed from
+// this history at read time — see monitoring/repository.ts — rather than
+// stored as a mutable field that could drift from what was actually
+// observed.
+model EndpointCheck {
+  id         String   @id @default(cuid())
+  apiId      String
+  url        String
+  isUp       Boolean
+  statusCode Int?
+  latencyMs  Int?
+  error      String?
+  checkedAt  DateTime @default(now())
+
+  @@index([apiId, checkedAt])
+  @@map("endpoint_checks")
+}

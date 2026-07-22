@@ -5,6 +5,8 @@ import prismaPlugin from "./plugins/prisma.js";
 import apiCatalogRoutes from "./modules/api-catalog/routes.js";
 import contributionVerificationRoutes from "./modules/contribution-verification/routes.js";
 import playgroundRoutes from "./modules/playground/routes.js";
+import monitoringRoutes from "./modules/monitoring/routes.js";
+import aiRoutes from "./modules/ai/routes.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -33,6 +35,8 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(apiCatalogRoutes, { prefix: "/api" });
   await app.register(contributionVerificationRoutes, { prefix: "/api" });
   await app.register(playgroundRoutes, { prefix: "/api" });
+  await app.register(monitoringRoutes, { prefix: "/api" });
+  await app.register(aiRoutes, { prefix: "/api" });
 
   return app;
 }

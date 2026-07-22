@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "ingest": "tsx src/ingestion/cli.ts",
     "ingest:worker": "tsx src/ingestion/queue/worker.ts",
+    "monitor:worker": "tsx src/modules/monitoring/worker.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:validate": "prisma validate"
