@@ -19,7 +19,7 @@ export default function CategoriesView({
 }: CategoriesViewProps) {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-[#24272C] pb-4">
+      <div className="flex items-center justify-between border-b border-border pb-4">
         <h2 className="text-xl font-bold text-white">API Directories</h2>
 
         {/* Pill filters */}
@@ -30,8 +30,8 @@ export default function CategoriesView({
               onClick={() => onSelectCategory(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
                 selectedCategory === cat
-                  ? "bg-[#4F8CFF] text-white"
-                  : "bg-[#121417] border border-[#24272C] text-zinc-400 hover:text-white"
+                  ? "bg-accent text-white"
+                  : "bg-surface border border-border text-zinc-400 hover:text-white"
               }`}
             >
               {cat}
@@ -45,7 +45,7 @@ export default function CategoriesView({
           <div
             key={api.id}
             onClick={() => onSelectApi(api)}
-            className="bg-[#121417] border border-[#24272C] hover:border-zinc-500 p-5 rounded-xl cursor-pointer transition-all space-y-4"
+            className="bg-surface border border-border hover:border-zinc-500 p-5 rounded-xl cursor-pointer transition-all space-y-4"
           >
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-sm" style={{ backgroundColor: api.logoColor }}>
@@ -58,7 +58,7 @@ export default function CategoriesView({
             </div>
             <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{api.tagline}</p>
 
-            <div className="pt-3 border-t border-[#24272C] flex items-center justify-between text-[10px] font-mono text-zinc-400">
+            <div className="pt-3 border-t border-border flex items-center justify-between text-[10px] font-mono text-zinc-400">
               <span>Latency: <strong className="text-white">{api.vitals.latency}ms</strong></span>
               <span className="text-emerald-500 font-semibold">{api.vitals.uptime}%</span>
             </div>

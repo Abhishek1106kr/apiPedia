@@ -100,7 +100,7 @@ export default function CompareView({ apis }: CompareViewProps) {
   const renderMetricCell = (row: MetricRow, api: ApiEntry, cls: string) => {
     const rawVal = row.get(api);
     return (
-      <div key={api.id} className="px-4 border-r border-[#24272C]/40 last:border-r-0 space-y-1.5">
+      <div key={api.id} className="px-4 border-r border-border/40 last:border-r-0 space-y-1.5">
         <div className="flex items-center justify-between">
           <span className={`font-semibold ${
             cls === "best" ? "text-emerald-400" : cls === "weakest" ? "text-amber-400" : cls === "missing" ? "text-zinc-600" : "text-white"
@@ -115,7 +115,7 @@ export default function CompareView({ apis }: CompareViewProps) {
         </div>
 
         {row.type && cls !== "missing" && (
-          <div className="w-full bg-[#181B20] h-1 rounded overflow-hidden">
+          <div className="w-full bg-surface-2 h-1 rounded overflow-hidden">
             {(() => {
               const numeric = typeof rawVal === "number" ? rawVal : parseFloat(String(rawVal).replace(/[^0-9.]/g, ""));
               const min = row.min ?? 0;
@@ -123,7 +123,7 @@ export default function CompareView({ apis }: CompareViewProps) {
               const pct = Math.max(0, Math.min(100, ((numeric - min) / (max - min)) * 100));
               return (
                 <div
-                  className={`h-full ${cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-[#4F8CFF]"}`}
+                  className={`h-full ${cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-accent"}`}
                   style={{ width: `${pct}%` }}
                 />
               );
@@ -138,7 +138,7 @@ export default function CompareView({ apis }: CompareViewProps) {
     <div className="space-y-6 flex-1 flex flex-col">
 
       {/* Header */}
-      <div className="border-b border-[#24272C] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="border-b border-border pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">Compare APIs</h2>
           <p className="text-zinc-500 text-xs mt-1 font-mono">Search, select and compare any APIs instantly.</p>
@@ -151,12 +151,12 @@ export default function CompareView({ apis }: CompareViewProps) {
           {comparedApiIds.map((apiId, slotIdx) => {
             const activeApi = apis.find((a) => a.id === apiId);
             return (
-              <div key={slotIdx} className="relative space-y-1 bg-[#121417] border border-[#24272C] p-3 rounded-lg flex flex-col justify-between">
+              <div key={slotIdx} className="relative space-y-1 bg-surface border border-border p-3 rounded-lg flex flex-col justify-between">
                 <label className="text-[9px] text-zinc-500 font-mono font-semibold uppercase tracking-wider">Slot {slotIdx + 1}</label>
                 <div className="relative">
                   <input
                     type="text"
-                    className="w-full bg-[#181B20] border border-[#24272C] focus:border-[#4F8CFF] rounded-lg px-2.5 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
+                    className="w-full bg-surface-2 border border-border focus:border-accent rounded-lg px-2.5 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
                     placeholder="Search API..."
                     value={compareSearchQueries[slotIdx] !== undefined ? compareSearchQueries[slotIdx] : (activeApi ? activeApi.name : "")}
                     onFocus={() => {
@@ -173,7 +173,7 @@ export default function CompareView({ apis }: CompareViewProps) {
                   />
                   {/* Dropdown overlay */}
                   {activeSearchDropdownSlot === slotIdx && (
-                    <div className="absolute left-0 right-0 top-full mt-1 bg-[#121417] border border-[#24272C] rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5 space-y-1">
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-surface border border-border rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5 space-y-1">
                       {apis
                         .filter((a) => a.name.toLowerCase().includes((compareSearchQueries[slotIdx] || "").toLowerCase()))
                         .map((api) => (
@@ -190,13 +190,13 @@ export default function CompareView({ apis }: CompareViewProps) {
 
                               setActiveSearchDropdownSlot(null);
                             }}
-                            className="p-2 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-md cursor-pointer flex items-center justify-between text-xs transition-all"
+                            className="p-2 hover:bg-surface-2 border border-transparent hover:border-border rounded-md cursor-pointer flex items-center justify-between text-xs transition-all"
                           >
                             <div className="flex items-center space-x-2">
                               <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: api.logoColor }}></div>
                               <span className="text-white font-semibold">{api.name}</span>
                               {api.verified && (
-                                <span className="bg-[#4F8CFF]/10 text-[#4F8CFF] px-1 py-0.5 rounded text-[8px] font-mono">✓</span>
+                                <span className="bg-accent/10 text-accent px-1 py-0.5 rounded text-[8px] font-mono">✓</span>
                               )}
                             </div>
                             <span className="text-[10px] text-zinc-500 font-mono">{api.vitals.healthScore}% Health</span>
@@ -220,7 +220,7 @@ export default function CompareView({ apis }: CompareViewProps) {
                 setComparedApiIds([...comparedApiIds, unusedApi.id]);
                 setCompareSearchQueries([...compareSearchQueries, unusedApi.name]);
               }}
-              className="bg-[#121417]/40 hover:bg-[#121417] border border-dashed border-[#24272C] hover:border-[#4F8CFF]/60 text-zinc-500 hover:text-[#4F8CFF] rounded-lg p-3 flex flex-col items-center justify-center space-y-1 text-xs font-semibold font-mono transition-all h-full min-h-[66px]"
+              className="bg-surface/40 hover:bg-surface border border-dashed border-border hover:border-accent/60 text-zinc-500 hover:text-accent rounded-lg p-3 flex flex-col items-center justify-center space-y-1 text-xs font-semibold font-mono transition-all h-full min-h-[66px]"
             >
               <span>+ Add another API</span>
             </button>
@@ -233,7 +233,7 @@ export default function CompareView({ apis }: CompareViewProps) {
             const api = apis.find((a) => a.id === apiId);
             if (!api) return null;
             return (
-              <div key={apiId} className="flex items-center space-x-1.5 bg-[#121417] border border-[#24272C] px-3 py-1 rounded-full text-xs font-mono">
+              <div key={apiId} className="flex items-center space-x-1.5 bg-surface border border-border px-3 py-1 rounded-full text-xs font-mono">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: api.logoColor }}></span>
                 <span className="text-zinc-300 font-medium">{api.name}</span>
                 {comparedApiIds.length > 2 && (
@@ -262,7 +262,7 @@ export default function CompareView({ apis }: CompareViewProps) {
           {sortedComparedApis.map((api) => {
             const desc = QUICK_DIFFERENCE_BY_ID[api.id] ?? api.tagline;
             return (
-              <div key={api.id} className="bg-[#121417] border border-[#24272C] p-3 rounded-lg space-y-1">
+              <div key={api.id} className="bg-surface border border-border p-3 rounded-lg space-y-1">
                 <div className="flex items-center space-x-1.5 text-xs font-bold text-white">
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: api.logoColor }}></div>
                   <span>{api.name}</span>
@@ -275,14 +275,14 @@ export default function CompareView({ apis }: CompareViewProps) {
       </div>
 
       {/* Table Filters & Settings Row */}
-      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 space-y-4">
+      <div className="bg-surface border border-border rounded-xl p-4 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
 
           {/* Search metrics */}
           <div className="relative flex-1 max-w-sm">
             <input
               type="text"
-              className="w-full bg-[#181B20] border border-[#24272C] hover:border-zinc-500 focus:border-[#4F8CFF] rounded-lg pl-3 pr-8 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
+              className="w-full bg-surface-2 border border-border hover:border-zinc-500 focus:border-accent rounded-lg pl-3 pr-8 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
               placeholder="Search Metrics... (e.g. Latency)"
               value={metricSearchQuery}
               onChange={(e) => setMetricSearchQuery(e.target.value)}
@@ -293,7 +293,7 @@ export default function CompareView({ apis }: CompareViewProps) {
           <div className="flex items-center space-x-3 text-xs">
             <span className="text-zinc-500 font-mono">Sort columns:</span>
             <select
-              className="bg-[#181B20] border border-[#24272C] text-xs text-white p-1.5 rounded-lg outline-none"
+              className="bg-surface-2 border border-border text-xs text-white p-1.5 rounded-lg outline-none"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortBy)}
             >
@@ -312,7 +312,7 @@ export default function CompareView({ apis }: CompareViewProps) {
             <label className="flex items-center space-x-2 cursor-pointer select-none text-zinc-400 hover:text-white">
               <input
                 type="checkbox"
-                className="rounded border-[#24272C] bg-[#181B20] text-[#4F8CFF] focus:ring-0"
+                className="rounded border-border bg-surface-2 text-accent focus:ring-0"
                 checked={hideIdentical}
                 onChange={(e) => setHideIdentical(e.target.checked)}
               />
@@ -324,25 +324,25 @@ export default function CompareView({ apis }: CompareViewProps) {
           <div className="flex flex-wrap gap-2 text-[10px] font-mono">
             <button
               onClick={() => handleExportCsv(sortedComparedApis, METRIC_GROUPS, hideIdentical)}
-              className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+              className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
             >
               CSV
             </button>
             <button
               onClick={() => handleExportMarkdown(sortedComparedApis, METRIC_GROUPS, hideIdentical)}
-              className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+              className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
             >
               Markdown
             </button>
             <button
               onClick={handleExportPdf}
-              className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+              className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
             >
               PDF
             </button>
             <button
               onClick={() => handleExportShare(sortedComparedApis)}
-              className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+              className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
             >
               Share
             </button>
@@ -351,7 +351,7 @@ export default function CompareView({ apis }: CompareViewProps) {
         </div>
 
         {/* Quick Categories Navigation Filters */}
-        <div className="flex flex-wrap gap-1.5 border-t border-[#24272C]/40 pt-3">
+        <div className="flex flex-wrap gap-1.5 border-t border-border/40 pt-3">
           {Object.keys(METRIC_GROUPS).map((groupName) => (
             <button
               key={groupName}
@@ -359,7 +359,7 @@ export default function CompareView({ apis }: CompareViewProps) {
                 const el = document.getElementById(`metric-group-${groupName}`);
                 if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
               }}
-              className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-400 hover:text-white px-2.5 py-1 rounded text-[10px] font-mono transition-colors"
+              className="bg-surface-2 hover:bg-border border border-border text-zinc-400 hover:text-white px-2.5 py-1 rounded text-[10px] font-mono transition-colors"
             >
               {groupName}
             </button>
@@ -369,21 +369,21 @@ export default function CompareView({ apis }: CompareViewProps) {
       </div>
 
       {/* Dynamic Comparison Grid Table with Horizontal Scroll */}
-      <div className="border border-[#24272C] rounded-xl overflow-x-auto w-full bg-[#121417] shadow-xl">
+      <div className="border border-border rounded-xl overflow-x-auto w-full bg-surface shadow-xl">
 
         <div
-          className="flex flex-col divide-y divide-[#24272C]"
+          className="flex flex-col divide-y divide-border"
           style={{ minWidth: `${225 + sortedComparedApis.length * 200}px` }}
         >
 
           {/* Header Row */}
           <div
-            className="grid items-center bg-[#181B20] text-xs font-mono font-semibold"
+            className="grid items-center bg-surface-2 text-xs font-mono font-semibold"
             style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
           >
-            <div className="p-4 border-r border-[#24272C] text-zinc-500 uppercase font-bold sticky left-0 bg-[#181B20] z-20">Metric Name</div>
+            <div className="p-4 border-r border-border text-zinc-500 uppercase font-bold sticky left-0 bg-surface-2 z-20">Metric Name</div>
             {sortedComparedApis.map((api) => (
-              <div key={api.id} className="p-4 flex items-center space-x-2 border-r border-[#24272C] last:border-0 justify-between">
+              <div key={api.id} className="p-4 flex items-center space-x-2 border-r border-border last:border-0 justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: api.logoColor }}></div>
                   <span className="text-white font-bold">{api.name}</span>
@@ -395,9 +395,9 @@ export default function CompareView({ apis }: CompareViewProps) {
 
           {/* PINNED METRICS GROUP (If any) */}
           {pinnedMetricKeys.length > 0 && (
-            <div className="flex flex-col bg-[#1c222c]/20 border-b border-[#24272C]">
+            <div className="flex flex-col bg-[#1c222c]/20 border-b border-border">
               <div
-                className="grid bg-[#1c222c]/40 text-[9px] font-mono font-bold text-[#4F8CFF] uppercase border-b border-[#24272C] tracking-wider py-1.5"
+                className="grid bg-[#1c222c]/40 text-[9px] font-mono font-bold text-accent uppercase border-b border-border tracking-wider py-1.5"
                 style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
               >
                 <div className="px-4 sticky left-0 bg-[#1c222c] z-10">★ Pinned Metrics</div>
@@ -408,10 +408,10 @@ export default function CompareView({ apis }: CompareViewProps) {
                 return (
                   <div
                     key={`pinned-${row.key}`}
-                    className="grid items-center hover:bg-[#181B20]/25 transition-colors py-2.5 text-xs font-mono"
+                    className="grid items-center hover:bg-surface-2/25 transition-colors py-2.5 text-xs font-mono"
                     style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                   >
-                    <div className="px-4 pr-2 border-r border-[#24272C]/60 sticky left-0 bg-[#121417] z-10 flex items-center justify-between">
+                    <div className="px-4 pr-2 border-r border-border/60 sticky left-0 bg-surface z-10 flex items-center justify-between">
                       <span className="text-zinc-300 font-semibold">{row.label}</span>
                       <button
                         onClick={() => setPinnedMetricKeys((prev) => prev.filter((k) => k !== row.key))}
@@ -445,10 +445,10 @@ export default function CompareView({ apis }: CompareViewProps) {
                 {/* Group Header */}
                 <div
                   onClick={() => setCollapsedGroups((prev) => ({ ...prev, [groupName]: !isCollapsed }))}
-                  className="grid bg-[#181B20]/60 text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-wider py-2.5 cursor-pointer border-b border-[#24272C] select-none hover:bg-[#181B20] transition-colors"
+                  className="grid bg-surface-2/60 text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-wider py-2.5 cursor-pointer border-b border-border select-none hover:bg-surface-2 transition-colors"
                   style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                 >
-                  <div className="px-4 sticky left-0 bg-[#181B20] z-10 flex items-center space-x-1.5">
+                  <div className="px-4 sticky left-0 bg-surface-2 z-10 flex items-center space-x-1.5">
                     <span>{isCollapsed ? "[+]" : "[-]"}</span>
                     <span>{groupName}</span>
                   </div>
@@ -461,10 +461,10 @@ export default function CompareView({ apis }: CompareViewProps) {
                   return (
                     <div
                       key={row.key}
-                      className="grid items-center hover:bg-[#181B20]/25 border-b border-[#24272C]/40 last:border-b-0 py-2.5 text-xs font-mono transition-colors"
+                      className="grid items-center hover:bg-surface-2/25 border-b border-border/40 last:border-b-0 py-2.5 text-xs font-mono transition-colors"
                       style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                     >
-                      <div className="px-4 pr-2 border-r border-[#24272C]/60 sticky left-0 bg-[#121417] z-10 flex items-center justify-between">
+                      <div className="px-4 pr-2 border-r border-border/60 sticky left-0 bg-surface z-10 flex items-center justify-between">
                         <span className="text-zinc-400">{row.label}</span>
                         <button
                           onClick={() => {

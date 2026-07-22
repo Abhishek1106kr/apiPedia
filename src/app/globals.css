@@ -1,28 +1,58 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — formalizes docs/00-master-prompt.md §3 (Design language)
+ * into real Tailwind v4 theme values instead of the repeated arbitrary hex
+ * utilities (bg-[#121417], border-[#24272C], etc.) previously scattered
+ * across every component. Tailwind v4 auto-generates utility classes from
+ * these --color-* variables: --color-surface produces bg-surface,
+ * text-surface, border-surface, etc.
+ *
+ * Dark is the only theme for now (per the master prompt — light mode needs
+ * its own token pass before it's supported, not just an invert).
+ */
 :root {
-  --background: #0B0D10;
-  --foreground: #F4F4F5;
-  --surface: #121417;
-  --card: #181B20;
-  --border-color: #24272C;
-  --accent: #4F8CFF;
+  /* Surfaces */
+  --color-background: #0B0D10;
+  --color-surface: #121417;
+  --color-surface-2: #181B20;
+  --color-border: #24272C;
+
+  /* Text */
+  --color-foreground: #F4F4F5;
+
+  /* Accent + semantic status — semantic colors are separate from the
+     accent hue and always pair with a text label, never color alone. */
+  --color-accent: #4F8CFF;
+  --color-good: #10B981;
+  --color-warn: #F59E0B;
+  --color-bad: #FB7185;
+
+  /* Motion — every transition in the app should reference one of these
+     two durations rather than an ad hoc value. */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-card: var(--card);
-  --color-border-dark: var(--border-color);
-  --color-accent: var(--accent);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-border: var(--color-border);
+  --color-foreground: var(--color-foreground);
+  --color-accent: var(--color-accent);
+  --color-good: var(--color-good);
+  --color-warn: var(--color-warn);
+  --color-bad: var(--color-bad);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+  --duration-fast: var(--duration-fast);
+  --duration-base: var(--duration-base);
 }
 
 body {
-  background-color: #0B0D10;
-  color: #F4F4F5;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
@@ -33,14 +63,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0D10;
+  background: var(--color-background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #24272C;
+  background: var(--color-border);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4F8CFF;
+  background: var(--color-accent);
 }

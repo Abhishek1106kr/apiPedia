@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { APIS, CATEGORIES } from "./data";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CATEGORIES } from "./data";
+import { useApis } from "@/hooks/useApis";
 import type { ApiEntry, PlaygroundResponseState } from "@/types/api";
 import CommandPalette from "@/components/CommandPalette";
 import KeyboardShortcutsModal from "@/components/KeyboardShortcutsModal";
@@ -26,6 +27,13 @@ const PLACEHOLDERS = [
 ];
 
 export default function ApiPediaApp() {
+  // Real catalog data from server/ (GET /api/apis) — replaces the
+  // hardcoded mock array. A freshly-published entry can have empty
+  // vitals/dna/painIndex/analytics/endpoints until ingestion and
+  // monitoring populate them for real; the detail-tab components each
+  // handle that with an explicit "no data yet" state rather than crashing.
+  const { data: apis, isLoading: apisLoading, error: apisError } = useApis();
+
   // Navigation & Page State
   const [activeTab, setActiveTab] = useState("home"); // 'home' | 'categories' | 'benchmarks' | 'compare' | 'docs'
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -111,7 +119,7 @@ export default function ApiPediaApp() {
     setPlaygroundResponse(null);
 
     const endpoint = selectedApi.endpoints[selectedEndpointIndex] || selectedApi.endpoints[0];
-    const duration = Math.floor(selectedApi.vitals.latency + (Math.random() * 40 - 20));
+    const duration = Math.floor((selectedApi.vitals.latency ?? 100) + (Math.random() * 40 - 20));
 
     setTimeout(() => {
       setPlaygroundLoading(false);
@@ -172,8 +180,10 @@ export default function ApiPediaApp() {
     }, 500);
   };
 
+  const catalog = useMemo(() => apis ?? [], [apis]);
+
   // Dynamic filter lists
-  const filteredApis = APIS.filter((api) => {
+  const filteredApis = catalog.filter((api) => {
     const matchesSearch =
       searchQuery === "" ||
       api.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -201,7 +211,7 @@ export default function ApiPediaApp() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0B0D10] text-[#F4F4F5] font-sans antialiased min-h-screen">
+    <div className="flex-1 flex flex-col bg-background text-foreground font-sans antialiased min-h-screen">
 
       <Header
         activeTab={activeTab}
@@ -236,11 +246,23 @@ export default function ApiPediaApp() {
             inlineAiExplanation={inlineAiExplanation}
             onAiAction={handleAiAction}
           />
+        ) : apisLoading && activeTab !== "docs" ? (
+          <div className="flex-1 flex items-center justify-center py-24 text-sm text-zinc-500 font-mono">
+            Loading API catalog...
+          </div>
+        ) : apisError && activeTab !== "docs" ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-24 gap-2 text-center">
+            <p className="text-sm text-rose-400 font-mono">Could not reach the API catalog.</p>
+            <p className="text-xs text-zinc-500 max-w-md">
+              {apisError instanceof Error ? apisError.message : "Unknown error"} — is the backend running at{" "}
+              {process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}?
+            </p>
+          </div>
         ) : (
           <div className="flex-1 flex flex-col space-y-8">
             {activeTab === "home" && (
               <HomeView
-                apis={APIS}
+                apis={catalog}
                 filteredApis={filteredApis}
                 searchQuery={searchQuery}
                 onSearchQueryChange={setSearchQuery}
@@ -260,9 +282,9 @@ export default function ApiPediaApp() {
               />
             )}
 
-            {activeTab === "benchmarks" && <BenchmarksView apis={APIS} />}
+            {activeTab === "benchmarks" && <BenchmarksView apis={catalog} />}
 
-            {activeTab === "compare" && <CompareView apis={APIS} />}
+            {activeTab === "compare" && <CompareView apis={catalog} />}
 
             {activeTab === "docs" && <DocsHubView />}
           </div>
@@ -275,7 +297,7 @@ export default function ApiPediaApp() {
         query={commandPaletteQuery}
         onQueryChange={setCommandPaletteQuery}
         onClose={() => setCommandPaletteOpen(false)}
-        apis={APIS}
+        apis={catalog}
         onSelectApi={handleCommandPaletteSelect}
         quickNavCommands={[
           { label: "Go to Benchmark Matrix", target: () => { setActiveTab("benchmarks"); setSelectedApi(null); setCommandPaletteOpen(false); } },
