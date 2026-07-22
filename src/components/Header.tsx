@@ -26,14 +26,14 @@ export default function Header({
   onOpenKeyboardModal,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-[#0B0D10] border-b border-[#24272C] px-6 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-background border-b border-border px-6 h-14 flex items-center justify-between">
       <div className="flex items-center space-x-8">
         <div
           onClick={onLogoClick}
           className="flex items-center space-x-2 cursor-pointer font-mono font-bold text-lg tracking-tight select-none text-white hover:text-zinc-300 transition-colors"
         >
           <span>apiPedia</span>
-          <span className="text-[#4F8CFF] font-sans">•</span>
+          <span className="text-accent font-sans">•</span>
         </div>
 
         <nav className="hidden md:flex space-x-6 text-sm">
@@ -56,10 +56,10 @@ export default function Header({
       <div className="flex items-center space-x-4">
         <div
           onClick={onOpenCommandPalette}
-          className="hidden sm:flex items-center space-x-2 bg-[#121417] border border-[#24272C] hover:border-[#4F8CFF]/50 px-3 py-1.5 rounded-lg text-xs text-zinc-500 cursor-pointer select-none transition-all"
+          className="hidden sm:flex items-center space-x-2 bg-surface border border-border hover:border-accent/50 px-3 py-1.5 rounded-lg text-xs text-zinc-500 cursor-pointer select-none transition-all"
         >
           <span>Search console</span>
-          <kbd className="bg-[#181B20] text-zinc-400 px-1.5 py-0.5 rounded border border-[#24272C] text-[10px]">⌘K</kbd>
+          <kbd className="bg-surface-2 text-zinc-400 px-1.5 py-0.5 rounded border border-border text-[10px]">⌘K</kbd>
         </div>
 
         <div
@@ -70,7 +70,7 @@ export default function Header({
           [?]
         </div>
 
-        <button className="bg-[#121417] border border-[#24272C] hover:border-zinc-500 hover:text-white text-zinc-400 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+        <button className="bg-surface border border-border hover:border-zinc-500 hover:text-white text-zinc-400 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
           Login
         </button>
       </div>

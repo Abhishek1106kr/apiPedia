@@ -201,7 +201,7 @@ export default function ApiPediaApp() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0B0D10] text-[#F4F4F5] font-sans antialiased min-h-screen">
+    <div className="flex-1 flex flex-col bg-background text-foreground font-sans antialiased min-h-screen">
 
       <Header
         activeTab={activeTab}

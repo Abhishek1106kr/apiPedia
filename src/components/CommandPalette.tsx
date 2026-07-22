@@ -34,10 +34,10 @@ export default function CommandPalette({
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-24 px-4">
-      <div className="w-full max-w-xl bg-[#121417] border border-[#24272C] rounded-xl shadow-2xl overflow-hidden flex flex-col font-sans">
+      <div className="w-full max-w-xl bg-surface border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col font-sans">
 
         {/* Header / Input */}
-        <div className="p-3 border-b border-[#24272C] flex items-center space-x-3">
+        <div className="p-3 border-b border-border flex items-center space-x-3">
           <span className="text-zinc-500">⌘</span>
           <input
             type="text"
@@ -62,14 +62,14 @@ export default function CommandPalette({
             <div
               key={api.id}
               onClick={() => onSelectApi(api)}
-              className="p-2.5 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-lg cursor-pointer flex items-center justify-between text-xs transition-all group"
+              className="p-2.5 hover:bg-surface-2 border border-transparent hover:border-border rounded-lg cursor-pointer flex items-center justify-between text-xs transition-all group"
             >
               <div className="flex items-center space-x-2.5">
                 <div className="w-3 h-3 rounded" style={{ backgroundColor: api.logoColor }}></div>
                 <span className="text-white font-semibold">{api.name}</span>
                 <span className="text-zinc-500 text-[10px] font-mono">({api.category})</span>
               </div>
-              <span className="text-[10px] text-zinc-500 group-hover:text-[#4F8CFF] font-mono">Open API intelligence ➔</span>
+              <span className="text-[10px] text-zinc-500 group-hover:text-accent font-mono">Open API intelligence ➔</span>
             </div>
           ))}
 
@@ -78,7 +78,7 @@ export default function CommandPalette({
             <div
               key={cmd.label}
               onClick={cmd.target}
-              className="p-2.5 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-lg cursor-pointer flex items-center justify-between text-xs transition-all text-zinc-300 hover:text-white"
+              className="p-2.5 hover:bg-surface-2 border border-transparent hover:border-border rounded-lg cursor-pointer flex items-center justify-between text-xs transition-all text-zinc-300 hover:text-white"
             >
               <span>{cmd.label}</span>
               <span className="text-[10px] text-zinc-500 font-mono">CMD route</span>

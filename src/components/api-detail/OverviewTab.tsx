@@ -9,7 +9,7 @@ interface OverviewTabProps {
 export default function OverviewTab({ api }: OverviewTabProps) {
   const metrics = [
     { label: "Health Score", value: `${api.vitals.healthScore}%`, detail: "Operational Status", color: "text-emerald-500" },
-    { label: "Documentation Quality", value: `${api.vitals.docsScore}/10`, detail: "Highly readable", color: "text-[#4F8CFF]" },
+    { label: "Documentation Quality", value: `${api.vitals.docsScore}/10`, detail: "Highly readable", color: "text-accent" },
     { label: "SDK Quality", value: `${api.vitals.sdkScore}/10`, detail: "Excellent coverage", color: "text-amber-500" },
     { label: "Average Latency", value: `${api.vitals.latency}ms`, detail: "Global p50 metric", color: "text-white" },
     { label: "Monthly Uptime", value: `${api.vitals.uptime}%`, detail: "SLA Guaranteed", color: "text-emerald-500" },
@@ -27,7 +27,7 @@ export default function OverviewTab({ api }: OverviewTabProps) {
         <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider font-mono">Core Metrics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {metrics.map((item, idx) => (
-            <div key={idx} className="bg-[#121417] border border-[#24272C] rounded-lg p-4 flex flex-col justify-between">
+            <div key={idx} className="bg-surface border border-border rounded-lg p-4 flex flex-col justify-between">
               <span className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">{item.label}</span>
               <span className={`text-lg font-bold my-1 tracking-tight ${item.color}`}>{item.value}</span>
               <span className="text-[10px] text-zinc-500 font-medium">{item.detail}</span>
@@ -36,44 +36,44 @@ export default function OverviewTab({ api }: OverviewTabProps) {
         </div>
 
         {/* About Section */}
-        <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-3">
+        <div className="bg-surface border border-border rounded-xl p-5 space-y-3">
           <h3 className="text-sm font-semibold text-white">Platform Description</h3>
           <p className="text-zinc-400 text-sm leading-relaxed">{api.description}</p>
         </div>
       </div>
 
       {/* Sidebar Metadata */}
-      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 h-fit space-y-6">
+      <div className="bg-surface border border-border rounded-xl p-5 h-fit space-y-6">
         <h3 className="text-xs font-semibold text-zinc-400 uppercase font-mono tracking-wider">Repository Metadata</h3>
 
         <div className="space-y-4 text-xs font-mono">
-          <div className="flex justify-between py-1 border-b border-[#24272C]">
+          <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">API Version:</span>
             <span className="text-zinc-300 font-medium">{api.vitals.version}</span>
           </div>
-          <div className="flex justify-between py-1 border-b border-[#24272C]">
+          <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">Response Format:</span>
             <span className="text-zinc-300 font-medium">{api.vitals.responseFormat}</span>
           </div>
-          <div className="flex justify-between py-1 border-b border-[#24272C]">
+          <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">Difficulty Curve:</span>
             <span className={`font-semibold ${api.vitals.difficulty === "Easy" ? "text-emerald-500" : api.vitals.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"}`}>
               {api.vitals.difficulty}
             </span>
           </div>
-          <div className="flex justify-between py-1 border-b border-[#24272C]">
+          <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">GitHub Commits:</span>
             <span className="text-zinc-300 font-medium">{api.vitals.commitsCount}</span>
           </div>
-          <div className="flex justify-between py-1 border-b border-[#24272C]">
+          <div className="flex justify-between py-1 border-b border-border">
             <span className="text-zinc-500">SDK Maturity:</span>
             <span className="text-zinc-300 font-medium text-right max-w-[150px] truncate">{api.dna.sdkMaturity.split(" ")[0]}</span>
           </div>
         </div>
 
-        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+        <div className="p-4 bg-surface-2 border border-border rounded-lg space-y-2">
           <div className="flex items-center space-x-1.5">
-            <div className="w-2 h-2 rounded-full bg-[#4F8CFF]"></div>
+            <div className="w-2 h-2 rounded-full bg-accent"></div>
             <span className="text-xs font-semibold text-zinc-300">Developer Experience Check</span>
           </div>
           <p className="text-[10px] text-zinc-500 leading-relaxed">

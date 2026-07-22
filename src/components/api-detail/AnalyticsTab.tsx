@@ -31,10 +31,10 @@ export default function AnalyticsTab({ api }: AnalyticsTabProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
       {/* Historical Latency Chart */}
-      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Historical Latency (ms)</h3>
 
-        <div className="h-48 border-b border-l border-[#24272C]/80 relative flex items-end p-2">
+        <div className="h-48 border-b border-l border-border/80 relative flex items-end p-2">
           <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
             <polyline points={latencyCoords} fill="none" stroke="#4F8CFF" strokeWidth="1.5" />
             {latencyPoints.map((p, idx) => (
@@ -51,10 +51,10 @@ export default function AnalyticsTab({ api }: AnalyticsTabProps) {
       </div>
 
       {/* Uptime Status Timeline */}
-      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Uptime Status Timeline</h3>
 
-        <div className="h-48 border-b border-l border-[#24272C]/80 relative flex items-end p-2">
+        <div className="h-48 border-b border-l border-border/80 relative flex items-end p-2">
           <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
             <polyline points={uptimeCoords} fill="none" stroke="#10B981" strokeWidth="1.5" />
             {uptimePoints.map((p, idx) => (

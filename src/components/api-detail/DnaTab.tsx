@@ -22,10 +22,10 @@ export default function DnaTab({ api }: DnaTabProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
       {/* Radar Chart SVG Map */}
-      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-6 flex flex-col items-center space-y-4">
+      <div className="bg-surface border border-border rounded-xl p-6 flex flex-col items-center space-y-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono self-start">API DNA Dimension Vectors</h3>
 
-        <div className="relative w-64 h-64 flex items-center justify-center bg-[#181B20] rounded-xl border border-[#24272C]/60">
+        <div className="relative w-64 h-64 flex items-center justify-center bg-surface-2 rounded-xl border border-border/60">
           <svg viewBox="0 0 200 200" className="w-48 h-48">
             <polygon points="100,20 180,80 150,170 50,170 20,80" fill="none" stroke="#24272C" strokeWidth="1" />
             <polygon points="100,50 160,95 137,150 63,150 40,95" fill="none" stroke="#24272C" strokeWidth="1" />
@@ -52,7 +52,7 @@ export default function DnaTab({ api }: DnaTabProps) {
           <span className="absolute left-2 top-24 text-[9px] text-zinc-500 font-mono uppercase">Pricing</span>
         </div>
 
-        <div className="grid grid-cols-5 w-full text-center text-[10px] font-mono border-t border-[#24272C] pt-4">
+        <div className="grid grid-cols-5 w-full text-center text-[10px] font-mono border-t border-border pt-4">
           {Object.entries(api.dna.radar).map(([k, v]) => (
             <div key={k} className="flex flex-col">
               <span className="text-zinc-500 uppercase">{k}</span>
@@ -66,11 +66,11 @@ export default function DnaTab({ api }: DnaTabProps) {
       <div className="space-y-6">
 
         {/* DNA matches */}
-        <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+        <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Similarity Alignment</h3>
           <div className="space-y-3">
             {api.dna.similarities.map((sim, idx) => (
-              <div key={idx} className="p-3 bg-[#181B20] border border-[#24272C] rounded-lg flex items-center justify-between">
+              <div key={idx} className="p-3 bg-surface-2 border border-border rounded-lg flex items-center justify-between">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <span className="text-xs font-bold text-white capitalize">{sim.target} DNA match</span>
@@ -87,12 +87,12 @@ export default function DnaTab({ api }: DnaTabProps) {
 
         {/* Predictors */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 flex flex-col justify-between">
+          <div className="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between">
             <span className="text-[9px] text-zinc-500 font-mono font-semibold uppercase">Deprecation Risk</span>
             <span className="text-lg font-bold text-emerald-500 tracking-tight mt-1">{api.dna.deprecationRisk.split(" ")[0]}</span>
             <span className="text-[9px] text-zinc-500 mt-1 leading-normal">Evaluated via active SDK issues</span>
           </div>
-          <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 flex flex-col justify-between">
+          <div className="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between">
             <span className="text-[9px] text-zinc-500 font-mono font-semibold uppercase">6m Breaking Prediction</span>
             <span className="text-lg font-bold text-amber-500 tracking-tight mt-1">{api.dna.breakingChangesPredictor}%</span>
             <span className="text-[9px] text-zinc-500 mt-1 leading-normal">Computed from evolutionary logs</span>
@@ -100,12 +100,12 @@ export default function DnaTab({ api }: DnaTabProps) {
         </div>
 
         {/* Timeline */}
-        <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+        <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Evolution Timeline</h3>
-          <div className="relative pl-4 border-l border-[#24272C] space-y-4 text-xs">
+          <div className="relative pl-4 border-l border-border space-y-4 text-xs">
             {api.dna.evolutionTimeline.map((time, idx) => (
               <div key={idx} className="relative">
-                <div className="absolute -left-[20px] top-1 w-2.5 h-2.5 rounded-full border border-[#24272C] bg-[#4F8CFF]"></div>
+                <div className="absolute -left-[20px] top-1 w-2.5 h-2.5 rounded-full border border-border bg-accent"></div>
                 <span className="text-[10px] text-zinc-500 font-mono">{time.date}</span>
                 <p className="text-zinc-300 font-medium mt-0.5 leading-relaxed">{time.event}</p>
               </div>

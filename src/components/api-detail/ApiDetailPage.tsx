@@ -73,7 +73,7 @@ export default function ApiDetailPage({
       </div>
 
       {/* API Detail Header */}
-      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-surface border border-border rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-start space-x-4">
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg text-white"
@@ -85,11 +85,11 @@ export default function ApiDetailPage({
             <div className="flex items-center space-x-2">
               <h1 className="text-xl font-bold text-white tracking-tight">{api.name}</h1>
               {api.verified && (
-                <span className="bg-[#4F8CFF]/10 text-[#4F8CFF] border border-[#4F8CFF]/20 px-2 py-0.5 rounded-full text-[10px] font-mono">
+                <span className="bg-accent/10 text-accent border border-accent/20 px-2 py-0.5 rounded-full text-[10px] font-mono">
                   Verified
                 </span>
               )}
-              <span className="text-zinc-500 text-xs font-mono bg-[#181B20] px-2 py-0.5 rounded border border-[#24272C]">
+              <span className="text-zinc-500 text-xs font-mono bg-surface-2 px-2 py-0.5 rounded border border-border">
                 {api.category}
               </span>
             </div>
@@ -103,7 +103,7 @@ export default function ApiDetailPage({
             href={api.docsUrl}
             target="_blank"
             rel="noreferrer"
-            className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
           >
             Official Docs
           </a>
@@ -111,13 +111,13 @@ export default function ApiDetailPage({
             href={api.githubUrl}
             target="_blank"
             rel="noreferrer"
-            className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
           >
             GitHub
           </a>
           <button
             onClick={() => onCopyText(api.baseUrl, "Base URL")}
-            className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5"
+            className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5"
           >
             <span>Copy Base URL</span>
           </button>
@@ -125,14 +125,14 @@ export default function ApiDetailPage({
       </div>
 
       {/* Sub-tab Selection */}
-      <div className="border-b border-[#24272C] flex space-x-1 overflow-x-auto scrollbar-none">
+      <div className="border-b border-border flex space-x-1 overflow-x-auto scrollbar-none">
         {SUB_TABS.map((sub) => (
           <button
             key={sub.id}
             onClick={() => onSubTabChange(sub.id)}
             className={`px-4 py-2 text-xs font-medium whitespace-nowrap border-b-2 -mb-px transition-all ${
               detailSubTab === sub.id
-                ? "border-[#4F8CFF] text-[#4F8CFF]"
+                ? "border-accent text-accent"
                 : "border-transparent text-zinc-400 hover:text-zinc-200"
             }`}
           >
