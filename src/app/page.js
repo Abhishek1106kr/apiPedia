@@ -311,17 +311,17 @@ export default function ApiPediaApp() {
   const sortedComparedApis = sortComparedApis(comparedApis, sortBy);
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0B0D10] text-[#F4F4F5] font-sans antialiased min-h-screen">
+    <div className="flex-1 flex flex-col bg-background text-foreground font-sans antialiased min-h-screen">
       
       {/* 1. Header Navigation */}
-      <header className="sticky top-0 z-40 bg-[#0B0D10] border-b border-[#24272C] px-6 h-14 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-background border-b border-border px-6 h-14 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <div 
             onClick={() => { setSelectedApi(null); setActiveTab("home"); setSearchQuery(""); }} 
             className="flex items-center space-x-2 cursor-pointer font-mono font-bold text-lg tracking-tight select-none text-white hover:text-zinc-300 transition-colors"
           >
             <span>apiPedia</span>
-            <span className="text-[#4F8CFF] font-sans">•</span>
+            <span className="text-accent font-sans">•</span>
           </div>
 
           <nav className="hidden md:flex space-x-6 text-sm">
@@ -361,10 +361,10 @@ export default function ApiPediaApp() {
         <div className="flex items-center space-x-4">
           <div 
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center space-x-2 bg-[#121417] border border-[#24272C] hover:border-[#4F8CFF]/50 px-3 py-1.5 rounded-lg text-xs text-zinc-500 cursor-pointer select-none transition-all"
+            className="hidden sm:flex items-center space-x-2 bg-surface border border-border hover:border-accent/50 px-3 py-1.5 rounded-lg text-xs text-zinc-500 cursor-pointer select-none transition-all"
           >
             <span>Search console</span>
-            <kbd className="bg-[#181B20] text-zinc-400 px-1.5 py-0.5 rounded border border-[#24272C] text-[10px]">⌘K</kbd>
+            <kbd className="bg-surface-2 text-zinc-400 px-1.5 py-0.5 rounded border border-border text-[10px]">⌘K</kbd>
           </div>
 
           <div 
@@ -375,7 +375,7 @@ export default function ApiPediaApp() {
             [?]
           </div>
 
-          <button className="bg-[#121417] border border-[#24272C] hover:border-zinc-500 hover:text-white text-zinc-400 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
+          <button className="bg-surface border border-border hover:border-zinc-500 hover:text-white text-zinc-400 px-3 py-1.5 rounded-lg text-xs font-medium transition-all">
             Login
           </button>
         </div>
@@ -398,7 +398,7 @@ export default function ApiPediaApp() {
             </div>
 
             {/* API Detail Header */}
-            <div className="bg-[#121417] border border-[#24272C] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="bg-surface border border-border rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex items-start space-x-4">
                 <div 
                   className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg text-white" 
@@ -410,11 +410,11 @@ export default function ApiPediaApp() {
                   <div className="flex items-center space-x-2">
                     <h1 className="text-xl font-bold text-white tracking-tight">{selectedApi.name}</h1>
                     {selectedApi.verified && (
-                      <span className="bg-[#4F8CFF]/10 text-[#4F8CFF] border border-[#4F8CFF]/20 px-2 py-0.5 rounded-full text-[10px] font-mono">
+                      <span className="bg-accent/10 text-accent border border-accent/20 px-2 py-0.5 rounded-full text-[10px] font-mono">
                         Verified
                       </span>
                     )}
-                    <span className="text-zinc-500 text-xs font-mono bg-[#181B20] px-2 py-0.5 rounded border border-[#24272C]">
+                    <span className="text-zinc-500 text-xs font-mono bg-surface-2 px-2 py-0.5 rounded border border-border">
                       {selectedApi.category}
                     </span>
                   </div>
@@ -428,7 +428,7 @@ export default function ApiPediaApp() {
                   href={selectedApi.docsUrl} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                  className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
                 >
                   Official Docs
                 </a>
@@ -436,13 +436,13 @@ export default function ApiPediaApp() {
                   href={selectedApi.githubUrl} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                  className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
                 >
                   GitHub
                 </a>
                 <button 
                   onClick={() => handleCopyText(selectedApi.baseUrl, "Base URL")}
-                  className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5"
+                  className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5"
                 >
                   <span>Copy Base URL</span>
                 </button>
@@ -450,7 +450,7 @@ export default function ApiPediaApp() {
             </div>
 
             {/* Sub-tab Selection */}
-            <div className="border-b border-[#24272C] flex space-x-1 overflow-x-auto scrollbar-none">
+            <div className="border-b border-border flex space-x-1 overflow-x-auto scrollbar-none">
               {[
                 { id: "overview", label: "Overview" },
                 { id: "playground", label: "Playground" },
@@ -469,7 +469,7 @@ export default function ApiPediaApp() {
                   }}
                   className={`px-4 py-2 text-xs font-medium whitespace-nowrap border-b-2 -mb-px transition-all ${
                     detailSubTab === sub.id 
-                      ? "border-[#4F8CFF] text-[#4F8CFF]" 
+                      ? "border-accent text-accent" 
                       : "border-transparent text-zinc-400 hover:text-zinc-200"
                   }`}
                 >
@@ -492,7 +492,7 @@ export default function ApiPediaApp() {
                       
                       {[
                         { label: "Health Score", value: `${selectedApi.vitals.healthScore}%`, detail: "Operational Status", color: "text-emerald-500" },
-                        { label: "Documentation Quality", value: `${selectedApi.vitals.docsScore}/10`, detail: "Highly readable", color: "text-[#4F8CFF]" },
+                        { label: "Documentation Quality", value: `${selectedApi.vitals.docsScore}/10`, detail: "Highly readable", color: "text-accent" },
                         { label: "SDK Quality", value: `${selectedApi.vitals.sdkScore}/10`, detail: "Excellent coverage", color: "text-amber-500" },
                         { label: "Average Latency", value: `${selectedApi.vitals.latency}ms`, detail: "Global p50 metric", color: "text-white" },
                         { label: "Monthly Uptime", value: `${selectedApi.vitals.uptime}%`, detail: "SLA Guaranteed", color: "text-emerald-500" },
@@ -501,7 +501,7 @@ export default function ApiPediaApp() {
                         { label: "Rate Limits", value: selectedApi.vitals.rateLimit, detail: "Standard tier", color: "text-white" },
                         { label: "Authentication", value: selectedApi.vitals.authType, detail: "Key handshake", color: "text-white" }
                       ].map((item, idx) => (
-                        <div key={idx} className="bg-[#121417] border border-[#24272C] rounded-lg p-4 flex flex-col justify-between">
+                        <div key={idx} className="bg-surface border border-border rounded-lg p-4 flex flex-col justify-between">
                           <span className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">{item.label}</span>
                           <span className={`text-lg font-bold my-1 tracking-tight ${item.color}`}>{item.value}</span>
                           <span className="text-[10px] text-zinc-500 font-medium">{item.detail}</span>
@@ -510,44 +510,44 @@ export default function ApiPediaApp() {
                     </div>
 
                     {/* About Section */}
-                    <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-3">
+                    <div className="bg-surface border border-border rounded-xl p-5 space-y-3">
                       <h3 className="text-sm font-semibold text-white">Platform Description</h3>
                       <p className="text-zinc-400 text-sm leading-relaxed">{selectedApi.description}</p>
                     </div>
                   </div>
 
                   {/* Sidebar Metadata */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 h-fit space-y-6">
+                  <div className="bg-surface border border-border rounded-xl p-5 h-fit space-y-6">
                     <h3 className="text-xs font-semibold text-zinc-400 uppercase font-mono tracking-wider">Repository Metadata</h3>
                     
                     <div className="space-y-4 text-xs font-mono">
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">API Version:</span>
                         <span className="text-zinc-300 font-medium">{selectedApi.vitals.version}</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">Response Format:</span>
                         <span className="text-zinc-300 font-medium">{selectedApi.vitals.responseFormat}</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">Difficulty Curve:</span>
                         <span className={`font-semibold ${selectedApi.vitals.difficulty === "Easy" ? "text-emerald-500" : selectedApi.vitals.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"}`}>
                           {selectedApi.vitals.difficulty}
                         </span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">GitHub Commits:</span>
                         <span className="text-zinc-300 font-medium">{selectedApi.vitals.commitsCount}</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">SDK Maturity:</span>
                         <span className="text-zinc-300 font-medium text-right max-w-[150px] truncate">{selectedApi.dna.sdkMaturity.split(" ")[0]}</span>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                    <div className="p-4 bg-surface-2 border border-border rounded-lg space-y-2">
                       <div className="flex items-center space-x-1.5">
-                        <div className="w-2 h-2 rounded-full bg-[#4F8CFF]"></div>
+                        <div className="w-2 h-2 rounded-full bg-accent"></div>
                         <span className="text-xs font-semibold text-zinc-300">Developer Experience Check</span>
                       </div>
                       <p className="text-[10px] text-zinc-500 leading-relaxed">
@@ -560,24 +560,24 @@ export default function ApiPediaApp() {
 
               {/* SUB-TAB: PLAYGROUND */}
               {detailSubTab === "playground" && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 border border-[#24272C] rounded-xl overflow-hidden bg-[#121417]">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 border border-border rounded-xl overflow-hidden bg-surface">
                   
                   {/* Left Column: Editor & Params */}
-                  <div className="flex flex-col border-r border-[#24272C] p-6 space-y-5">
+                  <div className="flex flex-col border-r border-border p-6 space-y-5">
                     <div className="flex items-center justify-between">
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Interactive Sandbox</h3>
                       <div className="flex space-x-1.5">
                         {/* Hidden AI features inside Sections */}
                         <button 
                           onClick={() => handleAiAction("explain")}
-                          className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-400 hover:text-white px-2 py-1 rounded text-[10px] font-medium transition-colors"
+                          className="bg-surface-2 hover:bg-border border border-border text-zinc-400 hover:text-white px-2 py-1 rounded text-[10px] font-medium transition-colors"
                           title="Explain endpoint rules"
                         >
                           ✨ Explain Endpoint
                         </button>
                         <button 
                           onClick={() => handleAiAction("practices")}
-                          className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-400 hover:text-white px-2 py-1 rounded text-[10px] font-medium transition-colors"
+                          className="bg-surface-2 hover:bg-border border border-border text-zinc-400 hover:text-white px-2 py-1 rounded text-[10px] font-medium transition-colors"
                           title="Suggest Best Practices"
                         >
                           💡 Best Practices
@@ -597,7 +597,7 @@ export default function ApiPediaApp() {
                           {selectedApi.endpoints[selectedEndpointIndex]?.method}
                         </span>
                         <select 
-                          className="flex-1 bg-[#181B20] border border-[#24272C] rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-[#4F8CFF]"
+                          className="flex-1 bg-surface-2 border border-border rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-accent"
                           value={selectedEndpointIndex}
                           onChange={(e) => selectEndpoint(selectedApi, parseInt(e.target.value))}
                         >
@@ -613,7 +613,7 @@ export default function ApiPediaApp() {
                       <label className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">Headers</label>
                       <textarea
                         rows={2}
-                        className="w-full bg-[#181B20] border border-[#24272C] rounded-lg p-3 text-xs font-mono text-zinc-300 outline-none focus:border-[#4F8CFF] resize-none"
+                        className="w-full bg-surface-2 border border-border rounded-lg p-3 text-xs font-mono text-zinc-300 outline-none focus:border-accent resize-none"
                         value={playgroundHeaders}
                         onChange={(e) => setPlaygroundHeaders(e.target.value)}
                       />
@@ -625,7 +625,7 @@ export default function ApiPediaApp() {
                         <label className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">Request Body (JSON)</label>
                         <textarea
                           rows={6}
-                          className="w-full flex-1 bg-[#181B20] border border-[#24272C] rounded-lg p-3 text-xs font-mono text-zinc-300 outline-none focus:border-[#4F8CFF] resize-y"
+                          className="w-full flex-1 bg-surface-2 border border-border rounded-lg p-3 text-xs font-mono text-zinc-300 outline-none focus:border-accent resize-y"
                           value={playgroundBody}
                           onChange={(e) => setPlaygroundBody(e.target.value)}
                         />
@@ -643,7 +643,7 @@ export default function ApiPediaApp() {
 
                     {/* Inline AI output container */}
                     {(inlineAiLoading || inlineAiExplanation) && (
-                      <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg text-xs space-y-2 relative">
+                      <div className="p-4 bg-surface-2/60 border border-border rounded-lg text-xs space-y-2 relative">
                         {inlineAiLoading ? (
                           <div className="text-zinc-500 animate-pulse font-mono">AI compiling analysis...</div>
                         ) : (
@@ -662,8 +662,8 @@ export default function ApiPediaApp() {
                     {/* Code Generator Snippets */}
                     <div className="space-y-2 flex flex-col flex-1">
                       <label className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">Autogenerated Integration Client</label>
-                      <div className="bg-[#181B20] border border-[#24272C] rounded-lg overflow-hidden flex flex-col flex-1 max-h-[300px]">
-                        <div className="bg-[#121417] px-3 py-1.5 border-b border-[#24272C] flex items-center justify-between">
+                      <div className="bg-surface-2 border border-border rounded-lg overflow-hidden flex flex-col flex-1 max-h-[300px]">
+                        <div className="bg-surface px-3 py-1.5 border-b border-border flex items-center justify-between">
                           <span className="text-[10px] text-zinc-400 font-mono">Python Code Example</span>
                           <button 
                             onClick={() => handleCopyText(selectedApi.endpoints[selectedEndpointIndex]?.codeExamples.python || "", "Python Code")}
@@ -672,7 +672,7 @@ export default function ApiPediaApp() {
                             [Copy Code]
                           </button>
                         </div>
-                        <pre className="p-3 text-[11px] font-mono text-zinc-300 overflow-auto whitespace-pre select-all bg-[#0B0D10]/50 flex-1">
+                        <pre className="p-3 text-[11px] font-mono text-zinc-300 overflow-auto whitespace-pre select-all bg-background/50 flex-1">
                           {selectedApi.endpoints[selectedEndpointIndex]?.codeExamples.python}
                         </pre>
                       </div>
@@ -681,14 +681,14 @@ export default function ApiPediaApp() {
                     {/* API response output box */}
                     <div className="space-y-2 flex-1 flex flex-col">
                       <label className="text-[10px] text-zinc-500 font-mono font-semibold uppercase">API response payload</label>
-                      <div className="bg-[#181B20] border border-[#24272C] rounded-lg p-4 flex flex-col flex-1 justify-center min-h-[180px] font-mono text-xs">
+                      <div className="bg-surface-2 border border-border rounded-lg p-4 flex flex-col flex-1 justify-center min-h-[180px] font-mono text-xs">
                         {playgroundResponse ? (
                           <div className="space-y-3 flex-1 flex flex-col">
-                            <div className="flex items-center justify-between text-[10px] border-b border-[#24272C] pb-2 text-zinc-500">
+                            <div className="flex items-center justify-between text-[10px] border-b border-border pb-2 text-zinc-500">
                               <span>STATUS: <span className="text-emerald-500 font-bold">{playgroundResponse.status} OK</span></span>
                               <span>LATENCY: <span className="text-white font-bold">{playgroundResponseTime}ms</span></span>
                             </div>
-                            <pre className="flex-1 text-[11px] text-emerald-400 overflow-auto whitespace-pre select-all bg-[#0B0D10]/50 p-2.5 rounded border border-[#24272C]/40">
+                            <pre className="flex-1 text-[11px] text-emerald-400 overflow-auto whitespace-pre select-all bg-background/50 p-2.5 rounded border border-border/40">
                               {JSON.stringify(playgroundResponse.body, null, 2)}
                             </pre>
                           </div>
@@ -710,15 +710,15 @@ export default function ApiPediaApp() {
                   {/* Left Column: Sidebar of endpoints */}
                   <div className="space-y-2 lg:col-span-1">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 font-mono pl-2">Endpoints</h3>
-                    <div className="space-y-1 bg-[#121417] border border-[#24272C] rounded-lg p-2">
+                    <div className="space-y-1 bg-surface border border-border rounded-lg p-2">
                       {selectedApi.endpoints.map((e, idx) => (
                         <button
                           key={idx}
                           onClick={() => selectEndpoint(selectedApi, idx)}
                           className={`w-full text-left px-3 py-2 rounded text-xs font-mono flex items-center space-x-2 transition-colors ${
                             selectedEndpointIndex === idx 
-                              ? "bg-[#181B20] border border-[#24272C] text-[#4F8CFF]" 
-                              : "hover:bg-[#181B20] text-zinc-400 hover:text-zinc-200"
+                              ? "bg-surface-2 border border-border text-accent" 
+                              : "hover:bg-surface-2 text-zinc-400 hover:text-zinc-200"
                           }`}
                         >
                           <span className={`text-[10px] font-bold ${e.method === "POST" ? "text-amber-500" : "text-emerald-500"}`}>{e.method}</span>
@@ -729,14 +729,14 @@ export default function ApiPediaApp() {
                   </div>
 
                   {/* Right Column: Endpoint Doc details */}
-                  <div className="lg:col-span-3 bg-[#121417] border border-[#24272C] rounded-xl p-6 space-y-6">
+                  <div className="lg:col-span-3 bg-surface border border-border rounded-xl p-6 space-y-6">
                     {(() => {
                       const ep = selectedApi.endpoints[selectedEndpointIndex] || selectedApi.endpoints[0];
                       return (
                         <div className="space-y-6">
                           
                           {/* Heading */}
-                          <div className="border-b border-[#24272C] pb-4 space-y-2">
+                          <div className="border-b border-border pb-4 space-y-2">
                             <div className="flex items-center space-x-2.5">
                               <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold font-mono uppercase ${
                                 ep.method === "POST" ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
@@ -749,9 +749,9 @@ export default function ApiPediaApp() {
                           {/* Parameters Table */}
                           <div className="space-y-3">
                             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Parameters</h3>
-                            <div className="border border-[#24272C] rounded-lg overflow-hidden">
+                            <div className="border border-border rounded-lg overflow-hidden">
                               <table className="w-full text-left text-xs font-mono">
-                                <thead className="bg-[#181B20] border-b border-[#24272C] text-zinc-500">
+                                <thead className="bg-surface-2 border-b border-border text-zinc-500">
                                   <tr>
                                     <th className="p-3">Field</th>
                                     <th className="p-3">Type</th>
@@ -759,9 +759,9 @@ export default function ApiPediaApp() {
                                     <th className="p-3">Description</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y divide-[#24272C]">
+                                <tbody className="divide-y divide-border">
                                   {ep.params.map((p, idx) => (
-                                    <tr key={idx} className="hover:bg-[#181B20]/40">
+                                    <tr key={idx} className="hover:bg-surface-2/40">
                                       <td className="p-3 text-white font-semibold">{p.name}</td>
                                       <td className="p-3 text-zinc-400 text-[11px]">{p.type}</td>
                                       <td className="p-3">
@@ -780,8 +780,8 @@ export default function ApiPediaApp() {
                           {/* Multi-language code tabs */}
                           <div className="space-y-3">
                             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Integration Code Examples</h3>
-                            <div className="border border-[#24272C] rounded-lg overflow-hidden bg-[#181B20]">
-                              <div className="bg-[#121417] px-4 py-2 border-b border-[#24272C] flex items-center justify-between">
+                            <div className="border border-border rounded-lg overflow-hidden bg-surface-2">
+                              <div className="bg-surface px-4 py-2 border-b border-border flex items-center justify-between">
                                 <span className="text-[10px] text-zinc-400 font-mono">JavaScript Fetch client</span>
                                 <button 
                                   onClick={() => handleCopyText(ep.codeExamples.javascript || "", "Javascript SDK Code")}
@@ -790,7 +790,7 @@ export default function ApiPediaApp() {
                                   [Copy Code]
                                 </button>
                               </div>
-                              <pre className="p-4 text-[11px] font-mono text-[#4F8CFF] overflow-auto whitespace-pre bg-[#0B0D10]/40">
+                              <pre className="p-4 text-[11px] font-mono text-accent overflow-auto whitespace-pre bg-background/40">
                                 {ep.codeExamples.javascript}
                               </pre>
                             </div>
@@ -799,7 +799,7 @@ export default function ApiPediaApp() {
                           {/* Response Payload Specification */}
                           <div className="space-y-3">
                             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Response Schema (200 OK)</h3>
-                            <pre className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg text-[11px] font-mono text-emerald-400 overflow-auto max-h-[300px]">
+                            <pre className="p-4 bg-surface-2 border border-border rounded-lg text-[11px] font-mono text-emerald-400 overflow-auto max-h-[300px]">
                               {JSON.stringify(ep.response.body, null, 2)}
                             </pre>
                           </div>
@@ -817,11 +817,11 @@ export default function ApiPediaApp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
                   {/* Radar Chart SVG Map */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-6 flex flex-col items-center space-y-4">
+                  <div className="bg-surface border border-border rounded-xl p-6 flex flex-col items-center space-y-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono self-start">API DNA Dimension Vectors</h3>
                     
                     {/* SVG Render for Radar Vector */}
-                    <div className="relative w-64 h-64 flex items-center justify-center bg-[#181B20] rounded-xl border border-[#24272C]/60">
+                    <div className="relative w-64 h-64 flex items-center justify-center bg-surface-2 rounded-xl border border-border/60">
                       <svg viewBox="0 0 200 200" className="w-48 h-48">
                         {/* Background pentagons */}
                         <polygon points="100,20 180,80 150,170 50,170 20,80" fill="none" stroke="#24272C" strokeWidth="1" />
@@ -867,7 +867,7 @@ export default function ApiPediaApp() {
                       <span className="absolute left-2 top-24 text-[9px] text-zinc-500 font-mono uppercase">Pricing</span>
                     </div>
 
-                    <div className="grid grid-cols-5 w-full text-center text-[10px] font-mono border-t border-[#24272C] pt-4">
+                    <div className="grid grid-cols-5 w-full text-center text-[10px] font-mono border-t border-border pt-4">
                       {Object.entries(selectedApi.dna.radar).map(([k, v]) => (
                         <div key={k} className="flex flex-col">
                           <span className="text-zinc-500 uppercase">{k}</span>
@@ -881,11 +881,11 @@ export default function ApiPediaApp() {
                   <div className="space-y-6">
                     
                     {/* DNA matches */}
-                    <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                    <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Similarity Alignment</h3>
                       <div className="space-y-3">
                         {selectedApi.dna.similarities.map((sim, idx) => (
-                          <div key={idx} className="p-3 bg-[#181B20] border border-[#24272C] rounded-lg flex items-center justify-between">
+                          <div key={idx} className="p-3 bg-surface-2 border border-border rounded-lg flex items-center justify-between">
                             <div className="space-y-1">
                               <div className="flex items-center space-x-2">
                                 <span className="text-xs font-bold text-white capitalize">{sim.target} DNA match</span>
@@ -902,12 +902,12 @@ export default function ApiPediaApp() {
 
                     {/* Predictors */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 flex flex-col justify-between">
+                      <div className="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between">
                         <span className="text-[9px] text-zinc-500 font-mono font-semibold uppercase">Deprecation Risk</span>
                         <span className="text-lg font-bold text-emerald-500 tracking-tight mt-1">{selectedApi.dna.deprecationRisk.split(" ")[0]}</span>
                         <span className="text-[9px] text-zinc-500 mt-1 leading-normal">Evaluated via active SDK issues</span>
                       </div>
-                      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 flex flex-col justify-between">
+                      <div className="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between">
                         <span className="text-[9px] text-zinc-500 font-mono font-semibold uppercase">6m Breaking Prediction</span>
                         <span className="text-lg font-bold text-amber-500 tracking-tight mt-1">{selectedApi.dna.breakingChangesPredictor}%</span>
                         <span className="text-[9px] text-zinc-500 mt-1 leading-normal">Computed from evolutionary logs</span>
@@ -915,13 +915,13 @@ export default function ApiPediaApp() {
                     </div>
 
                     {/* Timeline */}
-                    <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                    <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Evolution Timeline</h3>
-                      <div className="relative pl-4 border-l border-[#24272C] space-y-4 text-xs">
+                      <div className="relative pl-4 border-l border-border space-y-4 text-xs">
                         {selectedApi.dna.evolutionTimeline.map((time, idx) => (
                           <div key={idx} className="relative">
                             {/* Dot */}
-                            <div className="absolute -left-[20px] top-1 w-2.5 h-2.5 rounded-full border border-[#24272C] bg-[#4F8CFF]"></div>
+                            <div className="absolute -left-[20px] top-1 w-2.5 h-2.5 rounded-full border border-border bg-accent"></div>
                             <span className="text-[10px] text-zinc-500 font-mono">{time.date}</span>
                             <p className="text-zinc-300 font-medium mt-0.5 leading-relaxed">{time.event}</p>
                           </div>
@@ -938,33 +938,33 @@ export default function ApiPediaApp() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   
                   {/* Pain Stats & Indicators */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-6 h-fit">
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-6 h-fit">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Community Pain Metrics</h3>
                     
                     <div className="space-y-4 text-xs font-mono">
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">GitHub Issues:</span>
                         <span className="text-white font-semibold">{selectedApi.painIndex.githubIssues}</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">StackOverflow:</span>
                         <span className="text-white font-semibold">{selectedApi.painIndex.stackoverflowQuestions} threads</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">Discord Mentions:</span>
                         <span className="text-white font-semibold">{selectedApi.painIndex.discordMentions}/day</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">Reddit Sentiment:</span>
                         <span className="text-zinc-300 font-semibold">{selectedApi.painIndex.redditActivity}</span>
                       </div>
-                      <div className="flex justify-between py-1 border-b border-[#24272C]">
+                      <div className="flex justify-between py-1 border-b border-border">
                         <span className="text-zinc-500">Learning Curve:</span>
                         <span className="text-zinc-300 font-semibold">{selectedApi.painIndex.learningDifficulty}</span>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg text-[10px] text-zinc-500 leading-relaxed font-mono">
+                    <div className="p-4 bg-surface-2 border border-border rounded-lg text-[10px] text-zinc-500 leading-relaxed font-mono">
                       Metrics aggregated using real-time scraping of public channels. Last update: 2026-07-16.
                     </div>
                   </div>
@@ -973,7 +973,7 @@ export default function ApiPediaApp() {
                   <div className="md:col-span-2 space-y-6">
                     
                     {/* Top Complaints */}
-                    <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                    <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Top Integration Complaints</h3>
                       <ul className="space-y-3 text-xs leading-relaxed text-zinc-400">
                         {selectedApi.painIndex.topComplaints.map((comp, idx) => (
@@ -986,11 +986,11 @@ export default function ApiPediaApp() {
                     </div>
 
                     {/* Confusing Endpoints list */}
-                    <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                    <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Most Confusing Endpoints</h3>
                       <div className="space-y-3 text-xs">
                         {selectedApi.painIndex.confusingEndpoints.map((ep, idx) => (
-                          <div key={idx} className="p-3.5 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                          <div key={idx} className="p-3.5 bg-surface-2 border border-border rounded-lg space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="font-mono text-rose-400 font-semibold">{ep.path}</span>
                               <span className="bg-rose-500/10 text-rose-500 border border-rose-500/20 px-1.5 py-0.5 rounded text-[9px] font-mono">
@@ -1004,22 +1004,22 @@ export default function ApiPediaApp() {
                     </div>
 
                     {/* Common Errors & Remedies */}
-                    <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                    <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Troubleshooting & AI Diagnostics</h3>
                       <div className="space-y-3 text-xs font-mono">
                         {selectedApi.painIndex.commonErrors.map((err, idx) => (
-                          <div key={idx} className="p-3 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
-                            <div className="flex items-center justify-between border-b border-[#24272C] pb-1.5">
+                          <div key={idx} className="p-3 bg-surface-2 border border-border rounded-lg space-y-2">
+                            <div className="flex items-center justify-between border-b border-border pb-1.5">
                               <span className="text-zinc-300 font-semibold">Error: <span className="text-rose-500">{err.code}</span></span>
                               <button 
                                 onClick={() => handleAiAction("explain_error")}
-                                className="bg-[#121417] border border-[#24272C] hover:border-[#4F8CFF] text-[9px] px-1.5 py-0.5 rounded text-zinc-400 hover:text-white"
+                                className="bg-surface border border-border hover:border-accent text-[9px] px-1.5 py-0.5 rounded text-zinc-400 hover:text-white"
                               >
                                 ✨ Explain Error
                               </button>
                             </div>
                             <p className="text-zinc-500 text-[11px]">{err.description}</p>
-                            <div className="p-2.5 bg-[#0B0D10]/50 border border-[#24272C]/40 rounded text-zinc-400 font-sans leading-relaxed text-[11px]">
+                            <div className="p-2.5 bg-background/50 border border-border/40 rounded text-zinc-400 font-sans leading-relaxed text-[11px]">
                               <strong className="text-emerald-500 font-mono uppercase text-[9px] block mb-0.5">AI Fix:</strong>
                               {err.remedy}
                             </div>
@@ -1036,10 +1036,10 @@ export default function ApiPediaApp() {
               {detailSubTab === "recipes" && (
                 <div className="space-y-6">
                   {selectedApi.recipes.map((recipe, idx) => (
-                    <div key={idx} className="bg-[#121417] border border-[#24272C] rounded-xl p-6 space-y-6">
+                    <div key={idx} className="bg-surface border border-border rounded-xl p-6 space-y-6">
                       
                       {/* Header */}
-                      <div className="flex items-center justify-between border-b border-[#24272C] pb-4">
+                      <div className="flex items-center justify-between border-b border-border pb-4">
                         <div className="space-y-1">
                           <h3 className="text-base font-bold text-white tracking-tight">{recipe.title}</h3>
                           <div className="flex space-x-2 text-[10px] font-mono">
@@ -1050,7 +1050,7 @@ export default function ApiPediaApp() {
                         </div>
                         <button 
                           onClick={() => handleCopyText(recipe.code, "Recipe Code")}
-                          className="bg-[#181B20] border border-[#24272C] hover:bg-[#24272C] text-zinc-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-mono"
+                          className="bg-surface-2 border border-border hover:bg-border text-zinc-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-mono"
                         >
                           [Copy Recipe]
                         </button>
@@ -1060,17 +1060,17 @@ export default function ApiPediaApp() {
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         
                         {/* ASCII / SVG Architecture Diagrams */}
-                        <div className="bg-[#181B20] border border-[#24272C] rounded-lg p-5 font-mono text-[10px] text-zinc-400 overflow-auto whitespace-pre">
+                        <div className="bg-surface-2 border border-border rounded-lg p-5 font-mono text-[10px] text-zinc-400 overflow-auto whitespace-pre">
                           <div className="text-[10px] uppercase font-bold text-zinc-500 mb-2">Integration Flow Architecture</div>
                           {recipe.diagram}
                         </div>
 
                         {/* Source code block */}
-                        <div className="bg-[#181B20] border border-[#24272C] rounded-lg overflow-hidden flex flex-col">
-                          <div className="bg-[#121417] border-b border-[#24272C] px-4 py-2 flex items-center justify-between text-[10px] text-zinc-500 font-mono">
+                        <div className="bg-surface-2 border border-border rounded-lg overflow-hidden flex flex-col">
+                          <div className="bg-surface border-b border-border px-4 py-2 flex items-center justify-between text-[10px] text-zinc-500 font-mono">
                             <span>production-integration.js</span>
                           </div>
-                          <pre className="p-4 text-[11px] font-mono text-zinc-300 overflow-auto whitespace-pre select-all bg-[#0B0D10]/40 flex-1">
+                          <pre className="p-4 text-[11px] font-mono text-zinc-300 overflow-auto whitespace-pre select-all bg-background/40 flex-1">
                             {recipe.code}
                           </pre>
                         </div>
@@ -1086,11 +1086,11 @@ export default function ApiPediaApp() {
               {detailSubTab === "paths" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {selectedApi.paths.map((path, idx) => (
-                    <div key={idx} className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
-                      <div className="flex items-center justify-between border-b border-[#24272C] pb-3">
+                    <div key={idx} className="bg-surface border border-border rounded-xl p-5 space-y-4">
+                      <div className="flex items-center justify-between border-b border-border pb-3">
                         <div className="space-y-1">
                           <h3 className="text-sm font-bold text-white">{path.name}</h3>
-                          <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase">{path.id} course path</span>
+                          <span className="text-[10px] text-accent font-mono font-semibold uppercase">{path.id} course path</span>
                         </div>
                         <span className="text-zinc-500 text-[10px] font-mono">0% Completed</span>
                       </div>
@@ -1099,7 +1099,7 @@ export default function ApiPediaApp() {
                       <div className="space-y-2.5">
                         {path.steps.map((step, sIdx) => (
                           <div key={sIdx} className="flex items-center space-x-3 text-xs text-zinc-400">
-                            <div className="w-5 h-5 rounded-full border border-[#24272C] flex items-center justify-center font-mono text-[10px] text-zinc-500">
+                            <div className="w-5 h-5 rounded-full border border-border flex items-center justify-center font-mono text-[10px] text-zinc-500">
                               {sIdx + 1}
                             </div>
                             <span className="font-medium">{step}</span>
@@ -1107,7 +1107,7 @@ export default function ApiPediaApp() {
                         ))}
                       </div>
 
-                      <button className="w-full bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 py-2 rounded-lg text-xs font-semibold font-mono tracking-tight transition-colors">
+                      <button className="w-full bg-surface-2 hover:bg-border border border-border text-zinc-300 py-2 rounded-lg text-xs font-semibold font-mono tracking-tight transition-colors">
                         START PATH
                       </button>
                     </div>
@@ -1120,11 +1120,11 @@ export default function ApiPediaApp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
                   {/* Uptime Trend Chart */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Historical Latency (ms)</h3>
                     
                     {/* SVG Line Graph */}
-                    <div className="h-48 border-b border-l border-[#24272C]/80 relative flex items-end p-2">
+                    <div className="h-48 border-b border-l border-border/80 relative flex items-end p-2">
                       <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
                         {/* Dynamic Polyline computed from analytics data */}
                         {(() => {
@@ -1163,11 +1163,11 @@ export default function ApiPediaApp() {
                   </div>
 
                   {/* Uptime Status Metrics */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">Uptime Status Timeline</h3>
                     
                     {/* SVG Line Graph */}
-                    <div className="h-48 border-b border-l border-[#24272C]/80 relative flex items-end p-2">
+                    <div className="h-48 border-b border-l border-border/80 relative flex items-end p-2">
                       <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
                         {(() => {
                           const pts = selectedApi.analytics.uptime;
@@ -1238,13 +1238,13 @@ export default function ApiPediaApp() {
                   <input
                     ref={searchInputRef}
                     type="text"
-                    className="w-full bg-[#121417] border border-[#24272C] hover:border-[#4F8CFF]/50 focus:border-[#4F8CFF] rounded-xl pl-12 pr-16 py-3.5 text-sm text-white outline-none placeholder-zinc-500 font-sans transition-all shadow-lg"
+                    className="w-full bg-surface border border-border hover:border-accent/50 focus:border-accent rounded-xl pl-12 pr-16 py-3.5 text-sm text-white outline-none placeholder-zinc-500 font-sans transition-all shadow-lg"
                     placeholder={placeholders[placeholderIndex]}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-                    <span className="text-[10px] font-mono text-zinc-500 bg-[#181B20] border border-[#24272C] px-2 py-0.5 rounded shadow">
+                    <span className="text-[10px] font-mono text-zinc-500 bg-surface-2 border border-border px-2 py-0.5 rounded shadow">
                       Press /
                     </span>
                   </div>
@@ -1263,7 +1263,7 @@ export default function ApiPediaApp() {
                         <div 
                           key={api.id}
                           onClick={() => { selectApi(api); }}
-                          className="bg-[#121417] border border-[#24272C] hover:border-[#4F8CFF]/60 p-5 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-4 group"
+                          className="bg-surface border border-border hover:border-accent/60 p-5 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-4 group"
                         >
                           <div className="flex items-start space-x-3.5">
                             <div 
@@ -1274,9 +1274,9 @@ export default function ApiPediaApp() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center space-x-2">
-                                <h3 className="text-sm font-bold text-white group-hover:text-[#4F8CFF] transition-colors">{api.name}</h3>
+                                <h3 className="text-sm font-bold text-white group-hover:text-accent transition-colors">{api.name}</h3>
                                 {api.verified && (
-                                  <span className="bg-[#4F8CFF]/10 text-[#4F8CFF] border border-[#4F8CFF]/20 px-1.5 py-0.5 rounded-full text-[9px] font-mono">
+                                  <span className="bg-accent/10 text-accent border border-accent/20 px-1.5 py-0.5 rounded-full text-[9px] font-mono">
                                     Verified
                                   </span>
                                 )}
@@ -1286,7 +1286,7 @@ export default function ApiPediaApp() {
                           </div>
 
                           {/* Stats Metrics Row */}
-                          <div className="grid grid-cols-3 gap-2 border-t border-[#24272C]/60 pt-3 text-[10px] font-mono text-zinc-400">
+                          <div className="grid grid-cols-3 gap-2 border-t border-border/60 pt-3 text-[10px] font-mono text-zinc-400">
                             <div className="flex flex-col">
                               <span className="text-zinc-500 uppercase text-[9px]">Uptime</span>
                               <span className="font-bold text-emerald-500">{api.vitals.uptime}%</span>
@@ -1310,14 +1310,14 @@ export default function ApiPediaApp() {
                     
                     {/* Columns grid */}
                     <div className="space-y-6">
-                      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 font-mono">Popular Vitals</h3>
                         <div className="space-y-2">
                           {APIS.slice(0, 4).map((api) => (
                             <div 
                               key={api.id}
                               onClick={() => { selectApi(api); }}
-                              className="flex items-center justify-between p-2.5 bg-[#181B20]/40 border border-[#24272C]/40 rounded-lg hover:border-zinc-500 cursor-pointer transition-colors"
+                              className="flex items-center justify-between p-2.5 bg-surface-2/40 border border-border/40 rounded-lg hover:border-zinc-500 cursor-pointer transition-colors"
                             >
                               <div className="flex items-center space-x-2.5">
                                 <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: api.logoColor }}></div>
@@ -1332,14 +1332,14 @@ export default function ApiPediaApp() {
                         </div>
                       </div>
 
-                      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 font-mono">Trending Channels</h3>
                         <div className="space-y-2">
                           {APIS.slice(4, 7).map((api) => (
                             <div 
                               key={api.id}
                               onClick={() => { selectApi(api); }}
-                              className="flex items-center justify-between p-2.5 bg-[#181B20]/40 border border-[#24272C]/40 rounded-lg hover:border-zinc-500 cursor-pointer transition-colors"
+                              className="flex items-center justify-between p-2.5 bg-surface-2/40 border border-border/40 rounded-lg hover:border-zinc-500 cursor-pointer transition-colors"
                             >
                               <div className="flex items-center space-x-2.5">
                                 <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: api.logoColor }}></div>
@@ -1356,20 +1356,20 @@ export default function ApiPediaApp() {
 
                     {/* Columns grid 2 */}
                     <div className="space-y-6">
-                      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 font-mono">Documentation Leaderboard</h3>
                         <div className="space-y-2">
                           {[...APIS].sort((a, b) => b.vitals.docsScore - a.vitals.docsScore).slice(0, 4).map((api) => (
                             <div 
                               key={api.id}
                               onClick={() => { selectApi(api); }}
-                              className="flex items-center justify-between p-2.5 bg-[#181B20]/40 border border-[#24272C]/40 rounded-lg hover:border-zinc-500 cursor-pointer transition-colors"
+                              className="flex items-center justify-between p-2.5 bg-surface-2/40 border border-border/40 rounded-lg hover:border-zinc-500 cursor-pointer transition-colors"
                             >
                               <div className="flex items-center space-x-2.5">
                                 <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: api.logoColor }}></div>
                                 <span className="text-xs font-bold text-white">{api.name}</span>
                               </div>
-                              <span className="text-[10px] font-mono text-[#4F8CFF] font-bold">
+                              <span className="text-[10px] font-mono text-accent font-bold">
                                 {api.vitals.docsScore}/10 DX
                               </span>
                             </div>
@@ -1378,14 +1378,14 @@ export default function ApiPediaApp() {
                       </div>
 
                       {/* Developer Warning Lists */}
-                      <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-rose-500 font-mono">Integration Friction Warnings</h3>
                         <div className="space-y-2">
                           {[...APIS].sort((a, b) => b.painIndex.githubIssues - a.painIndex.githubIssues).slice(0, 3).map((api) => (
                             <div 
                               key={api.id}
                               onClick={() => { selectApi(api); setDetailSubTab("pain"); }}
-                              className="flex items-center justify-between p-2.5 bg-[#181B20]/40 border border-rose-500/20 rounded-lg hover:border-rose-500 cursor-pointer transition-colors"
+                              className="flex items-center justify-between p-2.5 bg-surface-2/40 border border-rose-500/20 rounded-lg hover:border-rose-500 cursor-pointer transition-colors"
                             >
                               <div className="flex items-center space-x-2.5">
                                 <span className="text-xs font-bold text-white">{api.name}</span>
@@ -1410,7 +1410,7 @@ export default function ApiPediaApp() {
             {/* =============================================================== */}
             {activeTab === "categories" && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-[#24272C] pb-4">
+                <div className="flex items-center justify-between border-b border-border pb-4">
                   <h2 className="text-xl font-bold text-white">API Directories</h2>
                   
                   {/* Pill filters */}
@@ -1421,8 +1421,8 @@ export default function ApiPediaApp() {
                         onClick={() => setSelectedCategory(cat)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
                           selectedCategory === cat 
-                            ? "bg-[#4F8CFF] text-white" 
-                            : "bg-[#121417] border border-[#24272C] text-zinc-400 hover:text-white"
+                            ? "bg-accent text-white" 
+                            : "bg-surface border border-border text-zinc-400 hover:text-white"
                         }`}
                       >
                         {cat}
@@ -1436,7 +1436,7 @@ export default function ApiPediaApp() {
                     <div
                       key={api.id}
                       onClick={() => { selectApi(api); }}
-                      className="bg-[#121417] border border-[#24272C] hover:border-zinc-500 p-5 rounded-xl cursor-pointer transition-all space-y-4"
+                      className="bg-surface border border-border hover:border-zinc-500 p-5 rounded-xl cursor-pointer transition-all space-y-4"
                     >
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-sm" style={{ backgroundColor: api.logoColor }}>
@@ -1449,7 +1449,7 @@ export default function ApiPediaApp() {
                       </div>
                       <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{api.tagline}</p>
                       
-                      <div className="pt-3 border-t border-[#24272C] flex items-center justify-between text-[10px] font-mono text-zinc-400">
+                      <div className="pt-3 border-t border-border flex items-center justify-between text-[10px] font-mono text-zinc-400">
                         <span>Latency: <strong className="text-white">{api.vitals.latency}ms</strong></span>
                         <span className="text-emerald-500 font-semibold">{api.vitals.uptime}%</span>
                       </div>
@@ -1464,7 +1464,7 @@ export default function ApiPediaApp() {
             {/* =============================================================== */}
             {activeTab === "benchmarks" && (
               <div className="space-y-8">
-                <div className="border-b border-[#24272C] pb-4">
+                <div className="border-b border-border pb-4">
                   <h2 className="text-xl font-bold text-white tracking-tight">API Benchmarks & Performance</h2>
                   <p className="text-zinc-500 text-xs mt-1 font-mono">Aggregated and verified daily by local agents.</p>
                 </div>
@@ -1472,11 +1472,11 @@ export default function ApiPediaApp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
                   {/* Lowest latency Leaderboard */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-500 font-mono">Fastest Response (Latency)</h3>
                     <div className="space-y-3 font-mono text-xs">
                       {[...APIS].sort((a, b) => a.vitals.latency - b.vitals.latency).map((api, idx) => (
-                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-[#181B20]/50 border border-[#24272C]/40 rounded-lg">
+                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-surface-2/50 border border-border/40 rounded-lg">
                           <div className="flex items-center space-x-2.5">
                             <span className="text-zinc-500">#{idx + 1}</span>
                             <span className="text-white font-bold">{api.name}</span>
@@ -1488,11 +1488,11 @@ export default function ApiPediaApp() {
                   </div>
 
                   {/* Highest Uptime Leaderboard */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-500 font-mono">Highest Uptime (SLA Check)</h3>
                     <div className="space-y-3 font-mono text-xs">
                       {[...APIS].sort((a, b) => b.vitals.uptime - a.vitals.uptime).map((api, idx) => (
-                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-[#181B20]/50 border border-[#24272C]/40 rounded-lg">
+                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-surface-2/50 border border-border/40 rounded-lg">
                           <div className="flex items-center space-x-2.5">
                             <span className="text-zinc-500">#{idx + 1}</span>
                             <span className="text-white font-bold">{api.name}</span>
@@ -1504,11 +1504,11 @@ export default function ApiPediaApp() {
                   </div>
 
                   {/* Most Breaking Changes Warning */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-rose-500 font-mono">High Deprecation Index</h3>
                     <div className="space-y-3 font-mono text-xs">
                       {[...APIS].sort((a, b) => b.dna.breakingChangesPredictor - a.dna.breakingChangesPredictor).map((api, idx) => (
-                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-[#181B20]/50 border border-rose-500/20 rounded-lg">
+                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-surface-2/50 border border-rose-500/20 rounded-lg">
                           <div className="flex items-center space-x-2.5">
                             <span className="text-zinc-500">#{idx + 1}</span>
                             <span className="text-white font-bold">{api.name}</span>
@@ -1520,16 +1520,16 @@ export default function ApiPediaApp() {
                   </div>
 
                   {/* Best DX rating */}
-                  <div className="bg-[#121417] border border-[#24272C] rounded-xl p-5 space-y-4">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-[#4F8CFF] font-mono">Best Developer Experience (SDK + Docs)</h3>
+                  <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-accent font-mono">Best Developer Experience (SDK + Docs)</h3>
                     <div className="space-y-3 font-mono text-xs">
                       {[...APIS].sort((a, b) => b.vitals.docsScore - a.vitals.docsScore).map((api, idx) => (
-                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-[#181B20]/50 border border-[#24272C]/40 rounded-lg">
+                        <div key={api.id} className="flex items-center justify-between p-2.5 bg-surface-2/50 border border-border/40 rounded-lg">
                           <div className="flex items-center space-x-2.5">
                             <span className="text-zinc-500">#{idx + 1}</span>
                             <span className="text-white font-bold">{api.name}</span>
                           </div>
-                          <span className="text-[#4F8CFF] font-bold">{api.vitals.docsScore}/10</span>
+                          <span className="text-accent font-bold">{api.vitals.docsScore}/10</span>
                         </div>
                       ))}
                     </div>
@@ -1546,7 +1546,7 @@ export default function ApiPediaApp() {
               <div className="space-y-6 flex-1 flex flex-col">
                 
                 {/* Header */}
-                <div className="border-b border-[#24272C] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="border-b border-border pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-bold text-white tracking-tight">Compare APIs</h2>
                     <p className="text-zinc-500 text-xs mt-1 font-mono">Search, select and compare any APIs instantly.</p>
@@ -1559,12 +1559,12 @@ export default function ApiPediaApp() {
                     {comparedApiIds.map((apiId, slotIdx) => {
                       const activeApi = APIS.find(a => a.id === apiId);
                       return (
-                        <div key={slotIdx} className="relative space-y-1 bg-[#121417] border border-[#24272C] p-3 rounded-lg flex flex-col justify-between">
+                        <div key={slotIdx} className="relative space-y-1 bg-surface border border-border p-3 rounded-lg flex flex-col justify-between">
                           <label className="text-[9px] text-zinc-500 font-mono font-semibold uppercase tracking-wider">Slot {slotIdx + 1}</label>
                           <div className="relative">
                             <input
                               type="text"
-                              className="w-full bg-[#181B20] border border-[#24272C] focus:border-[#4F8CFF] rounded-lg px-2.5 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
+                              className="w-full bg-surface-2 border border-border focus:border-accent rounded-lg px-2.5 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
                               placeholder="Search API..."
                               value={compareSearchQueries[slotIdx] !== undefined ? compareSearchQueries[slotIdx] : (activeApi ? activeApi.name : "")}
                               onFocus={() => {
@@ -1581,7 +1581,7 @@ export default function ApiPediaApp() {
                             />
                             {/* Dropdown overlay */}
                             {activeSearchDropdownSlot === slotIdx && (
-                              <div className="absolute left-0 right-0 top-full mt-1 bg-[#121417] border border-[#24272C] rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5 space-y-1">
+                              <div className="absolute left-0 right-0 top-full mt-1 bg-surface border border-border rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5 space-y-1">
                                 {APIS
                                   .filter(a => a.name.toLowerCase().includes((compareSearchQueries[slotIdx] || "").toLowerCase()))
                                   .map(api => (
@@ -1598,13 +1598,13 @@ export default function ApiPediaApp() {
                                         
                                         setActiveSearchDropdownSlot(null);
                                       }}
-                                      className="p-2 hover:bg-[#181B20] border border-transparent hover:border-[#24272C] rounded-md cursor-pointer flex items-center justify-between text-xs transition-all"
+                                      className="p-2 hover:bg-surface-2 border border-transparent hover:border-border rounded-md cursor-pointer flex items-center justify-between text-xs transition-all"
                                     >
                                       <div className="flex items-center space-x-2">
                                         <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: api.logoColor }}></div>
                                         <span className="text-white font-semibold">{api.name}</span>
                                         {api.verified && (
-                                          <span className="bg-[#4F8CFF]/10 text-[#4F8CFF] px-1 py-0.5 rounded text-[8px] font-mono">✓</span>
+                                          <span className="bg-accent/10 text-accent px-1 py-0.5 rounded text-[8px] font-mono">✓</span>
                                         )}
                                       </div>
                                       <span className="text-[10px] text-zinc-500 font-mono">{api.vitals.healthScore}% Health</span>
@@ -1628,7 +1628,7 @@ export default function ApiPediaApp() {
                           setComparedApiIds([...comparedApiIds, unusedApi.id]);
                           setCompareSearchQueries([...compareSearchQueries, unusedApi.name]);
                         }}
-                        className="bg-[#121417]/40 hover:bg-[#121417] border border-dashed border-[#24272C] hover:border-[#4F8CFF]/60 text-zinc-500 hover:text-[#4F8CFF] rounded-lg p-3 flex flex-col items-center justify-center space-y-1 text-xs font-semibold font-mono transition-all h-full min-h-[66px]"
+                        className="bg-surface/40 hover:bg-surface border border-dashed border-border hover:border-accent/60 text-zinc-500 hover:text-accent rounded-lg p-3 flex flex-col items-center justify-center space-y-1 text-xs font-semibold font-mono transition-all h-full min-h-[66px]"
                       >
                         <span>+ Add another API</span>
                       </button>
@@ -1641,7 +1641,7 @@ export default function ApiPediaApp() {
                       const api = APIS.find(a => a.id === apiId);
                       if (!api) return null;
                       return (
-                        <div key={apiId} className="flex items-center space-x-1.5 bg-[#121417] border border-[#24272C] px-3 py-1 rounded-full text-xs font-mono">
+                        <div key={apiId} className="flex items-center space-x-1.5 bg-surface border border-border px-3 py-1 rounded-full text-xs font-mono">
                           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: api.logoColor }}></span>
                           <span className="text-zinc-300 font-medium">{api.name}</span>
                           {comparedApiIds.length > 2 && (
@@ -1701,7 +1701,7 @@ export default function ApiPediaApp() {
                           desc = api.tagline;
                       }
                       return (
-                        <div key={api.id} className="bg-[#121417] border border-[#24272C] p-3 rounded-lg space-y-1">
+                        <div key={api.id} className="bg-surface border border-border p-3 rounded-lg space-y-1">
                           <div className="flex items-center space-x-1.5 text-xs font-bold text-white">
                             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: api.logoColor }}></div>
                             <span>{api.name}</span>
@@ -1714,14 +1714,14 @@ export default function ApiPediaApp() {
                 </div>
 
                 {/* Table Filters & Settings Row */}
-                <div className="bg-[#121417] border border-[#24272C] rounded-xl p-4 space-y-4">
+                <div className="bg-surface border border-border rounded-xl p-4 space-y-4">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     
                     {/* Search metrics */}
                     <div className="relative flex-1 max-w-sm">
                       <input
                         type="text"
-                        className="w-full bg-[#181B20] border border-[#24272C] hover:border-zinc-500 focus:border-[#4F8CFF] rounded-lg pl-3 pr-8 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
+                        className="w-full bg-surface-2 border border-border hover:border-zinc-500 focus:border-accent rounded-lg pl-3 pr-8 py-1.5 text-xs text-white outline-none placeholder-zinc-500 font-sans"
                         placeholder="Search Metrics... (e.g. Latency)"
                         value={metricSearchQuery}
                         onChange={(e) => setMetricSearchQuery(e.target.value)}
@@ -1732,7 +1732,7 @@ export default function ApiPediaApp() {
                     <div className="flex items-center space-x-3 text-xs">
                       <span className="text-zinc-500 font-mono">Sort columns:</span>
                       <select
-                        className="bg-[#181B20] border border-[#24272C] text-xs text-white p-1.5 rounded-lg outline-none"
+                        className="bg-surface-2 border border-border text-xs text-white p-1.5 rounded-lg outline-none"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                       >
@@ -1751,7 +1751,7 @@ export default function ApiPediaApp() {
                       <label className="flex items-center space-x-2 cursor-pointer select-none text-zinc-400 hover:text-white">
                         <input
                           type="checkbox"
-                          className="rounded border-[#24272C] bg-[#181B20] text-[#4F8CFF] focus:ring-0"
+                          className="rounded border-border bg-surface-2 text-accent focus:ring-0"
                           checked={hideIdentical}
                           onChange={(e) => setHideIdentical(e.target.checked)}
                         />
@@ -1763,25 +1763,25 @@ export default function ApiPediaApp() {
                     <div className="flex flex-wrap gap-2 text-[10px] font-mono">
                       <button 
                         onClick={() => handleExportCsv(sortedComparedApis, METRIC_GROUPS, hideIdentical)}
-                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                        className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
                       >
                         CSV
                       </button>
                       <button 
                         onClick={() => handleExportMarkdown(sortedComparedApis, METRIC_GROUPS, hideIdentical)}
-                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                        className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
                       >
                         Markdown
                       </button>
                       <button 
                         onClick={handleExportPdf}
-                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                        className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
                       >
                         PDF
                       </button>
                       <button 
                         onClick={() => handleExportShare(sortedComparedApis)}
-                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-300 px-2.5 py-1.5 rounded"
+                        className="bg-surface-2 hover:bg-border border border-border text-zinc-300 px-2.5 py-1.5 rounded"
                       >
                         Share
                       </button>
@@ -1790,7 +1790,7 @@ export default function ApiPediaApp() {
                   </div>
 
                   {/* Quick Categories Navigation Filters */}
-                  <div className="flex flex-wrap gap-1.5 border-t border-[#24272C]/40 pt-3">
+                  <div className="flex flex-wrap gap-1.5 border-t border-border/40 pt-3">
                     {Object.keys(METRIC_GROUPS).map(groupName => (
                       <button
                         key={groupName}
@@ -1798,7 +1798,7 @@ export default function ApiPediaApp() {
                           const el = document.getElementById(`metric-group-${groupName}`);
                           if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
                         }}
-                        className="bg-[#181B20] hover:bg-[#24272C] border border-[#24272C] text-zinc-400 hover:text-white px-2.5 py-1 rounded text-[10px] font-mono transition-colors"
+                        className="bg-surface-2 hover:bg-border border border-border text-zinc-400 hover:text-white px-2.5 py-1 rounded text-[10px] font-mono transition-colors"
                       >
                         {groupName}
                       </button>
@@ -1808,21 +1808,21 @@ export default function ApiPediaApp() {
                 </div>
 
                 {/* Dynamic Comparison Grid Table with Horizontal Scroll */}
-                <div className="border border-[#24272C] rounded-xl overflow-x-auto w-full bg-[#121417] shadow-xl">
+                <div className="border border-border rounded-xl overflow-x-auto w-full bg-surface shadow-xl">
                   
                   <div 
-                    className="flex flex-col divide-y divide-[#24272C]" 
+                    className="flex flex-col divide-y divide-border" 
                     style={{ minWidth: `${225 + sortedComparedApis.length * 200}px` }}
                   >
                     
                     {/* Header Row */}
                     <div 
-                      className="grid items-center bg-[#181B20] text-xs font-mono font-semibold"
+                      className="grid items-center bg-surface-2 text-xs font-mono font-semibold"
                       style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                     >
-                      <div className="p-4 border-r border-[#24272C] text-zinc-500 uppercase font-bold sticky left-0 bg-[#181B20] z-20">Metric Name</div>
+                      <div className="p-4 border-r border-border text-zinc-500 uppercase font-bold sticky left-0 bg-surface-2 z-20">Metric Name</div>
                       {sortedComparedApis.map(api => (
-                        <div key={api.id} className="p-4 flex items-center space-x-2 border-r border-[#24272C] last:border-0 justify-between">
+                        <div key={api.id} className="p-4 flex items-center space-x-2 border-r border-border last:border-0 justify-between">
                           <div className="flex items-center space-x-2">
                             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: api.logoColor }}></div>
                             <span className="text-white font-bold">{api.name}</span>
@@ -1834,9 +1834,9 @@ export default function ApiPediaApp() {
 
                     {/* PINNED METRICS GROUP (If any) */}
                     {pinnedMetricKeys.length > 0 && (
-                      <div className="flex flex-col bg-[#1c222c]/20 border-b border-[#24272C]">
+                      <div className="flex flex-col bg-[#1c222c]/20 border-b border-border">
                         <div 
-                          className="grid bg-[#1c222c]/40 text-[9px] font-mono font-bold text-[#4F8CFF] uppercase border-b border-[#24272C] tracking-wider py-1.5"
+                          className="grid bg-[#1c222c]/40 text-[9px] font-mono font-bold text-accent uppercase border-b border-border tracking-wider py-1.5"
                           style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                         >
                           <div className="px-4 sticky left-0 bg-[#1c222c] z-10">★ Pinned Metrics</div>
@@ -1847,10 +1847,10 @@ export default function ApiPediaApp() {
                           return (
                             <div 
                               key={`pinned-${row.key}`}
-                              className="grid items-center hover:bg-[#181B20]/25 transition-colors py-2.5 text-xs font-mono"
+                              className="grid items-center hover:bg-surface-2/25 transition-colors py-2.5 text-xs font-mono"
                               style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                             >
-                              <div className="px-4 pr-2 border-r border-[#24272C]/60 sticky left-0 bg-[#121417] z-10 flex items-center justify-between">
+                              <div className="px-4 pr-2 border-r border-border/60 sticky left-0 bg-surface z-10 flex items-center justify-between">
                                 <span className="text-zinc-300 font-semibold">{row.label}</span>
                                 <button 
                                   onClick={() => setPinnedMetricKeys(prev => prev.filter(k => k !== row.key))}
@@ -1863,7 +1863,7 @@ export default function ApiPediaApp() {
                                 const rawVal = row.get(api);
                                 const cls = classifications[api.id];
                                 return (
-                                  <div key={api.id} className="px-4 border-r border-[#24272C]/40 last:border-r-0 space-y-1.5">
+                                  <div key={api.id} className="px-4 border-r border-border/40 last:border-r-0 space-y-1.5">
                                     <div className="flex items-center justify-between">
                                       <span className={`font-semibold ${
                                         cls === "best" ? "text-emerald-400" : cls === "weakest" ? "text-amber-400" : cls === "missing" ? "text-zinc-600" : "text-white"
@@ -1880,14 +1880,14 @@ export default function ApiPediaApp() {
 
                                     {/* Small visual progress bars */}
                                     {row.type && cls !== "missing" && (
-                                      <div className="w-full bg-[#181B20] h-1 rounded overflow-hidden">
+                                      <div className="w-full bg-surface-2 h-1 rounded overflow-hidden">
                                         {(() => {
                                           const numeric = typeof rawVal === 'number' ? rawVal : parseFloat(String(rawVal).replace(/[^0-9.]/g, ''));
                                           const pct = Math.max(0, Math.min(100, ((numeric - row.min) / (row.max - row.min)) * 100));
                                           return (
                                             <div 
                                               className={`h-full ${
-                                                cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-[#4F8CFF]"
+                                                cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-accent"
                                               }`}
                                               style={{ width: `${pct}%` }}
                                             />
@@ -1924,10 +1924,10 @@ export default function ApiPediaApp() {
                           {/* Group Header */}
                           <div 
                             onClick={() => setCollapsedGroups(prev => ({ ...prev, [groupName]: !isCollapsed }))}
-                            className="grid bg-[#181B20]/60 text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-wider py-2.5 cursor-pointer border-b border-[#24272C] select-none hover:bg-[#181B20] transition-colors"
+                            className="grid bg-surface-2/60 text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-wider py-2.5 cursor-pointer border-b border-border select-none hover:bg-surface-2 transition-colors"
                             style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                           >
-                            <div className="px-4 sticky left-0 bg-[#181B20] z-10 flex items-center space-x-1.5">
+                            <div className="px-4 sticky left-0 bg-surface-2 z-10 flex items-center space-x-1.5">
                               <span>{isCollapsed ? "[+]" : "[-]"}</span>
                               <span>{groupName}</span>
                             </div>
@@ -1940,10 +1940,10 @@ export default function ApiPediaApp() {
                             return (
                               <div 
                                 key={row.key}
-                                className="grid items-center hover:bg-[#181B20]/25 border-b border-[#24272C]/40 last:border-b-0 py-2.5 text-xs font-mono transition-colors"
+                                className="grid items-center hover:bg-surface-2/25 border-b border-border/40 last:border-b-0 py-2.5 text-xs font-mono transition-colors"
                                 style={{ gridTemplateColumns: `225px repeat(${sortedComparedApis.length}, minmax(200px, 1fr))` }}
                               >
-                                <div className="px-4 pr-2 border-r border-[#24272C]/60 sticky left-0 bg-[#121417] z-10 flex items-center justify-between">
+                                <div className="px-4 pr-2 border-r border-border/60 sticky left-0 bg-surface z-10 flex items-center justify-between">
                                   <span className="text-zinc-400">{row.label}</span>
                                   <button 
                                     onClick={() => {
@@ -1962,7 +1962,7 @@ export default function ApiPediaApp() {
                                   const rawVal = row.get(api);
                                   const cls = classifications[api.id];
                                   return (
-                                    <div key={api.id} className="px-4 border-r border-[#24272C]/40 last:border-r-0 space-y-1.5">
+                                    <div key={api.id} className="px-4 border-r border-border/40 last:border-r-0 space-y-1.5">
                                       <div className="flex items-center justify-between">
                                         <span className={`font-semibold ${
                                           cls === "best" ? "text-emerald-400" : cls === "weakest" ? "text-amber-400" : cls === "missing" ? "text-zinc-600" : "text-white"
@@ -1979,14 +1979,14 @@ export default function ApiPediaApp() {
 
                                       {/* Visual progress bar */}
                                       {row.type && cls !== "missing" && (
-                                        <div className="w-full bg-[#181B20] h-1 rounded overflow-hidden">
+                                        <div className="w-full bg-surface-2 h-1 rounded overflow-hidden">
                                           {(() => {
                                             const numeric = typeof rawVal === 'number' ? rawVal : parseFloat(String(rawVal).replace(/[^0-9.]/g, ''));
                                             const pct = Math.max(0, Math.min(100, ((numeric - row.min) / (row.max - row.min)) * 100));
                                             return (
                                               <div 
                                                 className={`h-full ${
-                                                  cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-[#4F8CFF]"
+                                                  cls === "best" ? "bg-emerald-500" : cls === "weakest" ? "bg-amber-500" : "bg-accent"
                                                 }`}
                                                 style={{ width: `${pct}%` }}
                                               />
@@ -2019,7 +2019,7 @@ export default function ApiPediaApp() {
                 {/* Docs Sidebar Navigation */}
                 <div className="lg:col-span-1 space-y-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 font-mono pl-2">Platform Docs</h2>
-                  <nav className="space-y-1.5 bg-[#121417] border border-[#24272C] rounded-xl p-3">
+                  <nav className="space-y-1.5 bg-surface border border-border rounded-xl p-3">
                     {[
                       { id: "quickstart", label: "Quickstart Guide", icon: "🚀" },
                       { id: "features", label: "Core Platform Features", icon: "🛠️" },
@@ -2031,8 +2031,8 @@ export default function ApiPediaApp() {
                         onClick={() => setDocsActiveSection(item.id)}
                         className={`w-full text-left px-3 py-2 rounded-lg text-xs font-mono flex items-center space-x-2.5 transition-colors ${
                           docsActiveSection === item.id 
-                            ? "bg-[#181B20] border border-[#24272C] text-[#4F8CFF] font-semibold" 
-                            : "hover:bg-[#181B20] text-zinc-400 hover:text-zinc-200"
+                            ? "bg-surface-2 border border-border text-accent font-semibold" 
+                            : "hover:bg-surface-2 text-zinc-400 hover:text-zinc-200"
                         }`}
                       >
                         <span>{item.icon}</span>
@@ -2041,7 +2041,7 @@ export default function ApiPediaApp() {
                     ))}
                   </nav>
 
-                  <div className="p-4 bg-[#121417] border border-[#24272C] rounded-xl space-y-2 text-[10px] font-mono text-zinc-500">
+                  <div className="p-4 bg-surface border border-border rounded-xl space-y-2 text-[10px] font-mono text-zinc-500">
                     <div>DOCS_VERSION: v1.4.0</div>
                     <div>LAST_REBUILD: 2026-07-22</div>
                     <div>STATUS: ● CACHED</div>
@@ -2049,13 +2049,13 @@ export default function ApiPediaApp() {
                 </div>
 
                 {/* Docs Main Content Window */}
-                <div className="lg:col-span-3 bg-[#121417] border border-[#24272C] rounded-xl p-6 lg:p-8 space-y-6 overflow-auto max-h-[80vh] scrollbar-thin">
+                <div className="lg:col-span-3 bg-surface border border-border rounded-xl p-6 lg:p-8 space-y-6 overflow-auto max-h-[80vh] scrollbar-thin">
                   
                   {/* DOCS_SECTION: QUICKSTART */}
                   {docsActiveSection === "quickstart" && (
                     <div className="space-y-6">
-                      <div className="border-b border-[#24272C] pb-4">
-                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">GETTING_STARTED</span>
+                      <div className="border-b border-border pb-4">
+                        <span className="text-[10px] text-accent font-mono font-semibold uppercase tracking-wider">GETTING_STARTED</span>
                         <h2 className="text-xl font-bold text-white mt-1">Quickstart & Developer Onboarding</h2>
                         <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
                           Welcome to APIPEDIA. This guide gets you up and running with account setup, generating credentials, and executing sandbox queries in minutes.
@@ -2072,8 +2072,8 @@ export default function ApiPediaApp() {
                         <p className="text-zinc-400 text-xs leading-relaxed">
                           We distribute the CLI binary through standard installers. Run the appropriate command for your platform:
                         </p>
-                        <div className="bg-[#181B20] border border-[#24272C] rounded-lg overflow-hidden">
-                          <div className="bg-[#121417] px-4 py-2 border-b border-[#24272C] flex items-center justify-between text-[10px] text-zinc-500 font-mono">
+                        <div className="bg-surface-2 border border-border rounded-lg overflow-hidden">
+                          <div className="bg-surface px-4 py-2 border-b border-border flex items-center justify-between text-[10px] text-zinc-500 font-mono">
                             <span>Install CLI Command</span>
                             <button onClick={() => handleCopyText("brew install apipedia/tap/apipedia", "CLI install")} className="hover:text-white">[Copy]</button>
                           </div>
@@ -2086,7 +2086,7 @@ export default function ApiPediaApp() {
                         <p className="text-zinc-400 text-xs leading-relaxed">
                           Run the login command in your terminal and input your developer API key when prompted:
                         </p>
-                        <pre className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg text-[11px] font-mono text-[#4F8CFF] overflow-auto">
+                        <pre className="p-4 bg-surface-2 border border-border rounded-lg text-[11px] font-mono text-accent overflow-auto">
                           {`$ apipedia auth login\nInput API key: ap_dev_********************\nAuthentication successful. Logged in as: alex@company.com`}
                         </pre>
                       </div>
@@ -2096,8 +2096,8 @@ export default function ApiPediaApp() {
                   {/* DOCS_SECTION: FEATURES */}
                   {docsActiveSection === "features" && (
                     <div className="space-y-6">
-                      <div className="border-b border-[#24272C] pb-4">
-                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">PLATFORM_FEATURES</span>
+                      <div className="border-b border-border pb-4">
+                        <span className="text-[10px] text-accent font-mono font-semibold uppercase tracking-wider">PLATFORM_FEATURES</span>
                         <h2 className="text-xl font-bold text-white mt-1">Core Platform Architecture</h2>
                         <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
                           Explore the four architectural blocks that power the APIPEDIA developer intelligence catalog.
@@ -2105,25 +2105,25 @@ export default function ApiPediaApp() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2/60 border border-border rounded-lg space-y-2">
                           <span className="text-xs font-bold text-white">1. Dual-Mode Playground</span>
                           <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
                             Run **Simulated Sandbox Mode** directly client-side using OpenAPI schemas, or switch to **Live Mode** utilizing local proxies to run requests directly without exposing keys.
                           </p>
                         </div>
-                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2/60 border border-border rounded-lg space-y-2">
                           <span className="text-xs font-bold text-white">2. Invisible AI Debugging</span>
                           <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
                             Intercept failed responses instantly. The AI parser maps status errors against OpenAPI constraints to suggest direct schema corrections.
                           </p>
                         </div>
-                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2/60 border border-border rounded-lg space-y-2">
                           <span className="text-xs font-bold text-white">3. Global Edge Telemetry</span>
                           <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
                             We execute stateless health checks every 60 seconds across US-East, EU-Central, AP-South, SA-East, and US-West hubs, checking uptime and response payload structures.
                           </p>
                         </div>
-                        <div className="p-4 bg-[#181B20]/60 border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2/60 border border-border rounded-lg space-y-2">
                           <span className="text-xs font-bold text-white">4. API DNA Mapping</span>
                           <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">
                             By vectorizing endpoints, auth profiles, and parameters, our similarity engine aligns APIs side-by-side (e.g., comparing Clerk to Auth0 or Stripe to Adyen).
@@ -2136,8 +2136,8 @@ export default function ApiPediaApp() {
                   {/* DOCS_SECTION: CLI */}
                   {docsActiveSection === "cli" && (
                     <div className="space-y-6">
-                      <div className="border-b border-[#24272C] pb-4">
-                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">CLI_REFERENCE</span>
+                      <div className="border-b border-border pb-4">
+                        <span className="text-[10px] text-accent font-mono font-semibold uppercase tracking-wider">CLI_REFERENCE</span>
                         <h2 className="text-xl font-bold text-white mt-1">APIPEDIA Command Line Interface</h2>
                         <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
                           Automate your local environment, query telemetries, and download schemas from the terminal.
@@ -2145,17 +2145,17 @@ export default function ApiPediaApp() {
                       </div>
 
                       <div className="space-y-4 font-mono text-xs">
-                        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2 border border-border rounded-lg space-y-2">
                           <div className="text-white font-bold">$ apipedia telemetry [api-id]</div>
                           <div className="text-zinc-500 text-[11px] font-sans">Query edge latency percentiles, monthly uptime, and active SDK details.</div>
                         </div>
 
-                        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2 border border-border rounded-lg space-y-2">
                           <div className="text-white font-bold">$ apipedia schema download [api-id] --format json</div>
                           <div className="text-zinc-500 text-[11px] font-sans">Download the verified OpenAPI specification file to your directory.</div>
                         </div>
 
-                        <div className="p-4 bg-[#181B20] border border-[#24272C] rounded-lg space-y-2">
+                        <div className="p-4 bg-surface-2 border border-border rounded-lg space-y-2">
                           <div className="text-white font-bold">$ apipedia mock run [api-id] --port 8080</div>
                           <div className="text-zinc-500 text-[11px] font-sans">Boot a local HTTP mock server validating request schemas offline.</div>
                         </div>
@@ -2166,8 +2166,8 @@ export default function ApiPediaApp() {
                   {/* DOCS_SECTION: FAQ */}
                   {docsActiveSection === "faq" && (
                     <div className="space-y-6">
-                      <div className="border-b border-[#24272C] pb-4">
-                        <span className="text-[10px] text-[#4F8CFF] font-mono font-semibold uppercase tracking-wider">RESOURCES_FAQ</span>
+                      <div className="border-b border-border pb-4">
+                        <span className="text-[10px] text-accent font-mono font-semibold uppercase tracking-wider">RESOURCES_FAQ</span>
                         <h2 className="text-xl font-bold text-white mt-1">Frequently Asked Questions</h2>
                         <p className="text-zinc-400 text-xs mt-1.5 leading-relaxed">
                           Quick reference for billing, self-hosting configurations, and latency metrics.
@@ -2182,14 +2182,14 @@ export default function ApiPediaApp() {
                           </p>
                         </div>
 
-                        <div className="space-y-1 border-t border-[#24272C]/60 pt-3">
+                        <div className="space-y-1 border-t border-border/60 pt-3">
                           <strong className="text-white block text-sm">Can APIPEDIA run inside our private subnet?</strong>
                           <p className="text-zinc-400 leading-relaxed text-[11px]">
                             Yes. The core catalog engine is Apache 2.0 open source. You can run docker compose files or Helm charts locally. Enterprise VPC licenses are available for private service gateway integrations.
                           </p>
                         </div>
 
-                        <div className="space-y-1 border-t border-[#24272C]/60 pt-3">
+                        <div className="space-y-1 border-t border-border/60 pt-3">
                           <strong className="text-white block text-sm">Does the playground store credentials?</strong>
                           <p className="text-zinc-400 leading-relaxed text-[11px]">
                             No. Your keys are cached client-side in the browser storage or run locally through proxy pipelines. They never transit the central APIPEDIA databases.
@@ -2230,7 +2230,7 @@ export default function ApiPediaApp() {
       />
 
       {/* Footer Details */}
-      <footer className="border-t border-[#24272C] py-6 text-center text-[10px] text-zinc-600 font-mono mt-12 bg-[#0B0D10]">
+      <footer className="border-t border-border py-6 text-center text-[10px] text-zinc-600 font-mono mt-12 bg-background">
         apiPedia Platform © 2026. Built with Next.js & TailwindCSS v4 theme configurations.
       </footer>
 
