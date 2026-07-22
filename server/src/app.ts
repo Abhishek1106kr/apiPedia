@@ -7,6 +7,7 @@ import contributionVerificationRoutes from "./modules/contribution-verification/
 import playgroundRoutes from "./modules/playground/routes.js";
 import monitoringRoutes from "./modules/monitoring/routes.js";
 import aiRoutes from "./modules/ai/routes.js";
+import searchRoutes from "./modules/search/routes.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -37,6 +38,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(playgroundRoutes, { prefix: "/api" });
   await app.register(monitoringRoutes, { prefix: "/api" });
   await app.register(aiRoutes, { prefix: "/api" });
+  await app.register(searchRoutes, { prefix: "/api" });
 
   return app;
 }
