@@ -1,0 +1,106 @@
+// First-draft schema for the API catalog, modeled directly off
+// src/types/api.ts (the frontend's mock-data shape). Nested structures that
+// don't yet need independent querying (vitals, dna, painIndex, analytics,
+// endpoints, recipes, paths) are stored as JSON rather than fully normalized
+// — normalize individual fields into their own tables only once a real
+// query pattern (e.g. "search endpoints by param name") demands it.
+
+// Uses driver adapters (@prisma/adapter-pg) instead of Prisma's native Rust
+// query engine binary — this repo is developed on Windows/ARM64, which
+// Prisma's prebuilt engine binaries don't support. Driver adapters talk to
+// Postgres over a plain Node.js driver (`pg`) instead.
+// engineType = "client" + queryCompiler drops Prisma's native Rust query
+// engine binary entirely (compiles queries in pure JS/TS instead), which is
+// required here since Prisma has no prebuilt engine for Windows/ARM64.
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ApiEntry {
+  id                String   @id
+  name              String
+  logoColor         String
+  category          String
+  verified          Boolean  @default(false)
+  tagline           String
+  description       String
+  docsUrl           String
+  githubUrl         String
+  openapiUrl        String
+  postmanUrl        String
+  sandboxAvailable  Boolean  @default(false)
+  baseUrl           String
+
+  vitals            Json
+  dna               Json
+  painIndex         Json
+  endpoints         Json
+  recipes           Json
+  paths             Json
+  analytics         Json
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("api_entries")
+}
+
+enum ContributionType {
+  NEW_API
+  CORRECTION
+  RECIPE
+}
+
+enum ContributionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Contribution {
+  id               String             @id @default(cuid())
+  type             ContributionType
+  status           ContributionStatus @default(PENDING)
+  targetApiId      String? // set for CORRECTION/RECIPE against an existing entry
+  submitterHandle  String
+  title            String
+  body             String
+  sourceUrl        String?
+
+  // Automated verification results (Phase 4 slice) — spam/duplicate/GitHub
+  // checks only. AI-assisted comparison against official docs and security
+  // scanning are not implemented yet; trustScore reflects the checks that
+  // do exist, not the full roadmap scoring model.
+  spamScore        Int
+  spamFlags        Json
+  isDuplicate      Boolean            @default(false)
+  githubVerified   Boolean?
+  trustScore       Int
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  auditLogs        AuditLog[]
+
+  @@index([status])
+  @@map("contributions")
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  contributionId String
+  contribution   Contribution @relation(fields: [contributionId], references: [id])
+  action         String
+  reason         String?
+  actor          String
+  createdAt      DateTime     @default(now())
+
+  @@index([contributionId])
+  @@map("audit_logs")
+}
