@@ -1,7 +1,9 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import sensible from "@fastify/sensible";
+import rateLimit from "@fastify/rate-limit";
 import { ZodError } from "zod";
 import prismaPlugin from "./plugins/prisma.js";
+import authPlugin from "./plugins/auth.js";
 import apiCatalogRoutes from "./modules/api-catalog/routes.js";
 import contributionVerificationRoutes from "./modules/contribution-verification/routes.js";
 import playgroundRoutes from "./modules/playground/routes.js";
@@ -16,6 +18,14 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await app.register(sensible);
   await app.register(prismaPlugin);
+  await app.register(authPlugin);
+
+  // Global default; routes that hit paid/costly third-party APIs (Groq)
+  // set a stricter per-route override — see modules/ai/routes.ts.
+  await app.register(rateLimit, {
+    max: 100,
+    timeWindow: "1 minute",
+  });
 
   // Routes call schema.parse() directly rather than passing a Fastify
   // validator, so a bad request surfaces as a thrown ZodError — map that to

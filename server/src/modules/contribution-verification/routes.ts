@@ -63,7 +63,7 @@ export default async function contributionVerificationRoutes(fastify: FastifyIns
     return contribution;
   });
 
-  fastify.post("/contributions/:id/approve", async (request, reply) => {
+  fastify.post("/contributions/:id/approve", { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const params = contributionParamsSchema.parse(request.params);
     const action = moderationActionSchema.parse(request.body);
 
@@ -77,7 +77,7 @@ export default async function contributionVerificationRoutes(fastify: FastifyIns
     return updated;
   });
 
-  fastify.post("/contributions/:id/reject", async (request, reply) => {
+  fastify.post("/contributions/:id/reject", { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const params = contributionParamsSchema.parse(request.params);
     const action = moderationActionSchema.parse(request.body);
 
@@ -94,7 +94,7 @@ export default async function contributionVerificationRoutes(fastify: FastifyIns
   // Rollback: revert an already-decided (approved/rejected) contribution
   // back to PENDING, e.g. a moderator changes their mind or a decision was
   // made in error. The audit log preserves the full history either way.
-  fastify.post("/contributions/:id/rollback", async (request, reply) => {
+  fastify.post("/contributions/:id/rollback", { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const params = contributionParamsSchema.parse(request.params);
     const action = moderationActionSchema.parse(request.body);
 

@@ -37,7 +37,7 @@ export default async function monitoringRoutes(fastify: FastifyInstance) {
   // Runs one real check round synchronously and returns the results
   // immediately — for manual refresh/testing without waiting for the
   // scheduler's next tick (default every 5 minutes, see scheduler.ts).
-  fastify.post("/monitoring/run-now", async () => {
+  fastify.post("/monitoring/run-now", { preHandler: fastify.requireAdmin }, async () => {
     return runMonitoringRound(fastify.prisma);
   });
 }

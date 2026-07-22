@@ -3,7 +3,14 @@ import { explainEndpointSchema } from "./schemas.js";
 import { explainEndpoint } from "./explainEndpoint.js";
 
 export default async function aiRoutes(fastify: FastifyInstance) {
-  fastify.post("/ai/explain-endpoint", async (request, reply) => {
+  // Stricter than the global default (see app.ts) — this route calls a
+  // paid, externally rate-limited LLM API per request, so it needs its own
+  // tighter cap rather than relying on the general one.
+  fastify.post("/ai/explain-endpoint", {
+    config: {
+      rateLimit: { max: 10, timeWindow: "1 minute" },
+    },
+  }, async (request, reply) => {
     const input = explainEndpointSchema.parse(request.body);
 
     try {
