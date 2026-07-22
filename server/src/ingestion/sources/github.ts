@@ -1,13 +1,8 @@
 import type { GithubMetadata } from "../types.js";
-
-function parseOwnerRepo(githubUrl: string): { owner: string; repo: string } | null {
-  const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/);
-  if (!match) return null;
-  return { owner: match[1], repo: match[2] };
-}
+import { parseGithubOwnerRepo } from "../../lib/githubUrl.js";
 
 export async function fetchGithubMetadata(githubUrl: string): Promise<GithubMetadata> {
-  const parsed = parseOwnerRepo(githubUrl);
+  const parsed = parseGithubOwnerRepo(githubUrl);
   if (!parsed) {
     throw new Error(`Could not parse owner/repo from GitHub URL: ${githubUrl}`);
   }

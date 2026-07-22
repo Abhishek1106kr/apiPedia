@@ -50,3 +50,57 @@ model ApiEntry {
 
   @@map("api_entries")
 }
+
+enum ContributionType {
+  NEW_API
+  CORRECTION
+  RECIPE
+}
+
+enum ContributionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Contribution {
+  id               String             @id @default(cuid())
+  type             ContributionType
+  status           ContributionStatus @default(PENDING)
+  targetApiId      String? // set for CORRECTION/RECIPE against an existing entry
+  submitterHandle  String
+  title            String
+  body             String
+  sourceUrl        String?
+
+  // Automated verification results (Phase 4 slice) — spam/duplicate/GitHub
+  // checks only. AI-assisted comparison against official docs and security
+  // scanning are not implemented yet; trustScore reflects the checks that
+  // do exist, not the full roadmap scoring model.
+  spamScore        Int
+  spamFlags        Json
+  isDuplicate      Boolean            @default(false)
+  githubVerified   Boolean?
+  trustScore       Int
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  auditLogs        AuditLog[]
+
+  @@index([status])
+  @@map("contributions")
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  contributionId String
+  contribution   Contribution @relation(fields: [contributionId], references: [id])
+  action         String
+  reason         String?
+  actor          String
+  createdAt      DateTime     @default(now())
+
+  @@index([contributionId])
+  @@map("audit_logs")
+}
