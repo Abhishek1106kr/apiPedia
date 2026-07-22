@@ -1,7 +1,9 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import sensible from "@fastify/sensible";
+import { ZodError } from "zod";
 import prismaPlugin from "./plugins/prisma.js";
 import apiCatalogRoutes from "./modules/api-catalog/routes.js";
+import contributionVerificationRoutes from "./modules/contribution-verification/routes.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -11,9 +13,24 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(sensible);
   await app.register(prismaPlugin);
 
+  // Routes call schema.parse() directly rather than passing a Fastify
+  // validator, so a bad request surfaces as a thrown ZodError — map that to
+  // 400 here instead of letting it fall through to Fastify's default 500.
+  app.setErrorHandler((error, _request, reply) => {
+    if (error instanceof ZodError) {
+      return reply.status(400).send({
+        statusCode: 400,
+        error: "Bad Request",
+        message: error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; "),
+      });
+    }
+    return reply.send(error);
+  });
+
   app.get("/health", async () => ({ status: "ok" }));
 
   await app.register(apiCatalogRoutes, { prefix: "/api" });
+  await app.register(contributionVerificationRoutes, { prefix: "/api" });
 
   return app;
 }
